@@ -39,6 +39,7 @@ The repository structure is based on [Cookiecutter Data Science](http://drivenda
 ├── data
 │   ├── raw                : Source data, input for mapping script
 │   └── processed          : Darwin Core output of mapping script GENERATED
+│   └── external           : LIFE MICA GBIF dataset to filter out data already published data
 │
 ├── docs                   : Repository website GENERATED
 │
