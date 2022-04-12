@@ -97,7 +97,7 @@ life_mica_obs <- readr::read_tsv(
 
 ## Generate hashes for species names
 
-We generate a hash based on the species name as saved in column `Sporen Waarnemingen Naam`. This is needed to create a unique `occurrenceID` of the form `eventID:hash` where eventID is the unique identifier of the event as defined in column `Registratie ID`. As long as the scientific name doesn't change, the hash and so the `occurrenceID` will be stable:
+We generate a hash based on the species name as saved in column `Sporen Waarnemingen Naam`. This is needed to create a unique `occurrenceID` of the form `eventID:hash` where `eventID` is the unique identifier of the event as defined in column `Registratie ID`. As long as the species name doesn't change, the hash and so the `occurrenceID` will be stable:
 
 ```{r generate_hashes}
 # Vectorize the digest function (The digest() function isn't vectorized. So if you pass in a vector, you get one value for the whole vector rather than a digest for each element of the vector):
