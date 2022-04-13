@@ -28,8 +28,8 @@ SELECT
   CASE
     WHEN o.'Registratie Verwijderd Omschrijving' = 'Verwijderd' THEN 'eradicated'
     WHEN o.'Sporen Waarnemingen Naam' = 'Eendensterfte circa 25 st' THEN 'found dead'
-    WHEN o.'Sporen Waarnemingen Naam' = 'Pootafdrukken wasbeer' THEN 'footprints'
-    WHEN o.'Sporen Waarnemingen Naam' = 'Nijlganzen nest' THEN 'nest'
+    WHEN o.'Sporen Waarnemingen Naam' = 'Pootafdrukken wasbeer' THEN 'found as tracks'
+    WHEN o.'Sporen Waarnemingen Naam' = 'Nijlganzen nest' THEN 'found as nest'
   ELSE NULL
   END                                   AS occurrenceRemarks,
 -- EVENT
