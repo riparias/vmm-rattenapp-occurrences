@@ -107,7 +107,7 @@ vdigest <- Vectorize(digest)
 # Generate hashes
 observations <-
   observations %>% 
-  mutate(species_name_hash = vdigest(.data$`Sporen Waarnemingen Naam`, algo="md5"))
+  mutate(species_name_hash = vdigest(.data$`Sporen Waarnemingen Naam`, algo = "md5"))
 ```
 
 ## Create database

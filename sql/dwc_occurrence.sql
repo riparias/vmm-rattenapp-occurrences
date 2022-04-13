@@ -73,16 +73,6 @@ SELECT
   30                                    AS coordinateUncertaintyInMeters,
   -- TAXON
   CASE
-    WHEN o.'Sporen Waarnemingen Naam' = 'Blauwalg' THEN 'Bacteria'
-    WHEN o.'Sporen Waarnemingen Naam' = 'Japanse duizendknoop' OR
-      o.'Sporen Waarnemingen Naam' = 'Reuzenberenklauw' OR
-      o.'Sporen Waarnemingen Naam' = 'Parelvederkruid' OR
-      o.'Sporen Waarnemingen Naam' = 'Waterteunisbloem' OR
-      o.'Sporen Waarnemingen Naam' = 'Reuzenbalsemien' OR
-      o.'Sporen Waarnemingen Naam' = 'Grote waternavel' THEN 'Plantae'
-    ELSE 'Animalia'
-  END                                   AS kingdom,
-  CASE
     WHEN o.'Sporen Waarnemingen Naam' = 'Blauwalg' THEN 'Cyanobacteria'
     WHEN o.'Sporen Waarnemingen Naam' = 'Japanse duizendknoop' THEN 'Fallopia japonica'
     WHEN o.'Sporen Waarnemingen Naam' = 'Reuzenberenklauw' THEN 'Heracleum mantegazzianum'
@@ -131,7 +121,17 @@ SELECT
     WHEN o.'Sporen Waarnemingen Naam' = 'Prooi van otter (karper)' THEN 'Cyprinus carpio'
     WHEN o.'Sporen Waarnemingen Naam' = 'Oeverzwaluwen' THEN 'Riparia riparia'
     ELSE NULL
-  END                                   AS scientificName
+  END                                   AS scientificName,
+  CASE
+    WHEN o.'Sporen Waarnemingen Naam' = 'Blauwalg' THEN 'Bacteria'
+    WHEN o.'Sporen Waarnemingen Naam' = 'Japanse duizendknoop' OR
+      o.'Sporen Waarnemingen Naam' = 'Reuzenberenklauw' OR
+      o.'Sporen Waarnemingen Naam' = 'Parelvederkruid' OR
+      o.'Sporen Waarnemingen Naam' = 'Waterteunisbloem' OR
+      o.'Sporen Waarnemingen Naam' = 'Reuzenbalsemien' OR
+      o.'Sporen Waarnemingen Naam' = 'Grote waternavel' THEN 'Plantae'
+    ELSE 'Animalia'
+  END                                   AS kingdom
 FROM observations AS o
   LEFT JOIN life_mica_obs as l
   ON l.registration_id = o.'Registratie ID'
