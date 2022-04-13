@@ -2,8 +2,6 @@
 Created by Damiano Oldoni (INBO)
 */
 
-/* RECORD-LEVEL */
-
 SELECT
   'Event'                               AS type,
   '"http://creativecommons.org/publicdomain/zero/1.0/"' AS license,
@@ -13,10 +11,6 @@ SELECT
   'VMM'                                 AS institutionCode,
   'The rattenapp data (PROVISIONAL)'    AS datasetName,
   'HumanObservation'                    AS basisOfRecord,
-  *
-FROM (
-
-SELECT
   o.'Registratie ID'                    AS eventID,
   date(o.Dag)                           AS eventDate,
   o.Jaar                                AS year,
@@ -172,4 +166,3 @@ WHERE
   o.'Sporen Waarnemingen Naam' != '2 stoplossen op het droge' AND
   o.'Sporen Waarnemingen Naam' != 'Wordt' AND
   o.'Sporen Waarnemingen Naam' != 'Melding bruine rat - geen'
-)
