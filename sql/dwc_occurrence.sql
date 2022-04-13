@@ -25,10 +25,10 @@ SELECT
     WHEN o.'Sporen Waarnemingen Naam' = 'Woelratten' THEN 'many'
     WHEN o.'Sporen Waarnemingen Naam' = 'Konijnen' THEN 'many'
     WHEN o.'Sporen Waarnemingen Naam' = 'Galsbandparkieten exoot' THEN 'many'
-    WHEN o.'Sporen Waarnemingen Naam' = '11 waterschildpadden' THEN 11
+    WHEN o.'Sporen Waarnemingen Naam' = '11 waterschildpadden' THEN '11'
     WHEN o.'Sporen Waarnemingen Naam' = 'Nijlganzen nest' THEN 'many'
     WHEN o.'Sporen Waarnemingen Naam' = 'Geelwangwaterschildpadden' THEN 'many'
-    WHEN o.'Sporen Waarnemingen Naam' = '100  canadese ganzen' THEN 100
+    WHEN o.'Sporen Waarnemingen Naam' = '100  canadese ganzen' THEN '100'
     WHEN o.'Sporen Waarnemingen Naam' = 'Eendensterfte circa 25 st' THEN '~25'
     WHEN o.'Sporen Waarnemingen Naam' = 'Oeverzwaluwen' THEN 'many'
     ELSE NULL
@@ -84,8 +84,8 @@ SELECT
     WHEN o.'VHA Categorie Omschrijving' = 'BEV - Bevaarbaar'
       THEN 'BEV - navigable'
   END                                   AS locationRemarks,
-  ROUND(o.'Locatie GPS Breedte', 5)     AS decimalLatitude,
-  ROUND(o.'Locatie GPS Lengte', 5)      AS decimalLongitude,
+  printf('%.5f', ROUND(o.'Locatie GPS Breedte', 5)) AS decimalLatitude,
+  printf('%.5f', ROUND(o.'Locatie GPS Lengte', 5)) AS decimalLongitude,
   'WGS84'                               AS geodeticDatum,
   30                                    AS coordinateUncertaintyInMeters,
   -- TAXON
