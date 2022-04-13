@@ -18,22 +18,9 @@ SELECT
   CASE
     WHEN o.'Sporen Waarnemingen Naam' = '11 waterschildpadden' THEN 11
     WHEN o.'Sporen Waarnemingen Naam' = '100  canadese ganzen' THEN 100
+    WHEN o.'Sporen Waarnemingen Naam' = 'Eendensterfte circa 25 st' THEN 25
     ELSE NULL
   END                                   AS individualCount,
-  CASE
-    WHEN o.'Sporen Waarnemingen Naam' = 'Bruine ratten. geen spore' THEN 'many'
-    WHEN o.'Sporen Waarnemingen Naam' = 'Woelratten' THEN 'many'
-    WHEN o.'Sporen Waarnemingen Naam' = 'Konijnen' THEN 'many'
-    WHEN o.'Sporen Waarnemingen Naam' = 'Galsbandparkieten exoot' THEN 'many'
-    WHEN o.'Sporen Waarnemingen Naam' = '11 waterschildpadden' THEN '11'
-    WHEN o.'Sporen Waarnemingen Naam' = 'Nijlganzen nest' THEN 'many'
-    WHEN o.'Sporen Waarnemingen Naam' = 'Geelwangwaterschildpadden' THEN 'many'
-    WHEN o.'Sporen Waarnemingen Naam' = '100  canadese ganzen' THEN '100'
-    WHEN o.'Sporen Waarnemingen Naam' = 'Eendensterfte circa 25 st' THEN '~25'
-    WHEN o.'Sporen Waarnemingen Naam' = 'Oeverzwaluwen' THEN 'many'
-    ELSE NULL
-  END                                   AS organismQuantityValue,
-  'individuals'                         AS organismQuantityType,
   CASE
     WHEN o.'Sporen Waarnemingen Naam' = 'Koe gered uit dyle' THEN 'cultivated'
     ELSE NULL
