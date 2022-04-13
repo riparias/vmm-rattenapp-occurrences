@@ -22,7 +22,7 @@ SELECT
     ELSE NULL
   END                                   AS individualCount,
   CASE
-    WHEN o.'Sporen Waarnemingen Naam' = 'Koe gered uit dyle' THEN 'cultivated'
+    WHEN o.'Sporen Waarnemingen Naam' = 'Koe gered uit dyle' THEN 'introduced'
     ELSE NULL
   END                                   AS establishmentMeans,
   CASE
