@@ -143,7 +143,7 @@ SELECT
     WHEN o.'Sporen Waarnemingen Naam' = 'Otter' THEN 'Lutra'
     WHEN o.'Sporen Waarnemingen Naam' = 'Hazelworm' THEN 'Anguis fragilis'
     WHEN o.'Sporen Waarnemingen Naam' = 'Egel' THEN 'Erinaceus europaeus'
-    WHEN o.'Sporen Waarnemingen Naam' = 'Koe gered uit dyle' THEN 'Bovidae'
+    WHEN o.'Sporen Waarnemingen Naam' = 'Koe gered uit dyle' THEN 'Bos taurus'
     WHEN o.'Sporen Waarnemingen Naam' = 'Eendensterfte circa 25 st' THEN 'Anatidae'
     WHEN o.'Sporen Waarnemingen Naam' = 'Prooi van otter (karper)' THEN 'Cyprinus carpio'
     WHEN o.'Sporen Waarnemingen Naam' = 'Oeverzwaluwen' THEN 'Riparia riparia'
