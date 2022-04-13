@@ -3,6 +3,7 @@ Created by Damiano Oldoni (INBO)
 */
 
 SELECT
+-- RECORD-LEVEL
   'Event'                               AS type,
   '"http://creativecommons.org/publicdomain/zero/1.0/"' AS license,
   'VMM'                                 AS rightsHolder,
@@ -11,9 +12,44 @@ SELECT
   'VMM'                                 AS institutionCode,
   'The rattenapp data (PROVISIONAL)'    AS datasetName,
   'HumanObservation'                    AS basisOfRecord,
+-- OCCURRENCE
+  o.'Registratie ID' || ':' || o.'species_name_hash' AS occurrenceID,
+  o.'Team Naam'                         AS recordedBy,
+  CASE
+    WHEN o.'Sporen Waarnemingen Naam' = '11 waterschildpadden' THEN 11
+    WHEN o.'Sporen Waarnemingen Naam' = '100  canadese ganzen' THEN 100
+    ELSE NULL
+  END                                   AS individualCount,
+  CASE
+    WHEN o.'Sporen Waarnemingen Naam' = 'Bruine ratten. geen spore' THEN 'many'
+    WHEN o.'Sporen Waarnemingen Naam' = 'Woelratten' THEN 'many'
+    WHEN o.'Sporen Waarnemingen Naam' = 'Konijnen' THEN 'many'
+    WHEN o.'Sporen Waarnemingen Naam' = 'Galsbandparkieten exoot' THEN 'many'
+    WHEN o.'Sporen Waarnemingen Naam' = '11 waterschildpadden' THEN 11
+    WHEN o.'Sporen Waarnemingen Naam' = 'Nijlganzen nest' THEN 'many'
+    WHEN o.'Sporen Waarnemingen Naam' = 'Geelwangwaterschildpadden' THEN 'many'
+    WHEN o.'Sporen Waarnemingen Naam' = '100  canadese ganzen' THEN 100
+    WHEN o.'Sporen Waarnemingen Naam' = 'Eendensterfte circa 25 st' THEN '~25'
+    WHEN o.'Sporen Waarnemingen Naam' = 'Oeverzwaluwen' THEN 'many'
+    ELSE NULL
+  END                                   AS organismQuantityValue,
+  'individuals'                         AS organismQuantityType,
+  CASE
+    WHEN o.'Sporen Waarnemingen Naam' = 'Koe gered uit dyle' THEN 'cultivated'
+    ELSE NULL
+  END                                   AS establishmentMeans,
+  CASE
+    WHEN o.'Registratie Verwijderd Omschrijving' = 'Verwijderd' THEN 'eradicated'
+    WHEN o.'Sporen Waarnemingen Naam' = 'Eendensterfte circa 25 st' THEN 'found dead'
+    WHEN o.'Sporen Waarnemingen Naam' = 'Pootafdrukken wasbeer' THEN 'footprints'
+    WHEN o.'Sporen Waarnemingen Naam' = 'Nijlganzen nest' THEN 'nest'
+  ELSE NULL
+  END                                   AS occurrenceRemarks,
+-- EVENT
   o.'Registratie ID'                    AS eventID,
   date(o.Dag)                           AS eventDate,
   o.Jaar                                AS year,
+-- LOCATION
   o.'Locatie ID'                        AS locationID,
   'Europe'                              AS continent,
   'Belgium'                             AS country,
@@ -23,11 +59,11 @@ SELECT
     ELSE o.'VHA Gewestelijke Waterloop Omschrijving'
   END                                   AS waterBody,
   CASE
+    WHEN o.`Provincie Omschrijving` = 'Antwerpen' THEN 'Antwerp'
+    WHEN o.`Provincie Omschrijving` = 'Oost-Vlaanderen' THEN 'East Flanders'
+    WHEN o.`Provincie Omschrijving` = 'Vlaams-Brabant' THEN 'Flemish Brabant'
     WHEN o.`Provincie Omschrijving` = 'Limburg' THEN 'Limburg'
     WHEN o.`Provincie Omschrijving` = 'West-Vlaanderen' THEN 'West Flanders'
-    WHEN o.`Provincie Omschrijving` = 'Oost-Vlaanderen' THEN 'East Flanders'
-    WHEN o.`Provincie Omschrijving` = 'Antwerpen' THEN 'Antwerp'
-    WHEN o.`Provincie Omschrijving` = 'Vlaams-Brabant' THEN 'Flemish Brabant'
     WHEN o.`Provincie Omschrijving` = 'Onbekend' THEN NULL
   END                                   AS stateProvince,
   CASE
@@ -48,10 +84,21 @@ SELECT
     WHEN o.'VHA Categorie Omschrijving' = 'BEV - Bevaarbaar'
       THEN 'BEV - navigable'
   END                                   AS locationRemarks,
-  ROUND(o.'Locatie GPS Breedte',5)      AS decimalLatitude,
-  ROUND(o.'Locatie GPS Lengte',5)       AS decimalLongitude,
+  ROUND(o.'Locatie GPS Breedte', 5)     AS decimalLatitude,
+  ROUND(o.'Locatie GPS Lengte', 5)      AS decimalLongitude,
   'WGS84'                               AS geodeticDatum,
   30                                    AS coordinateUncertaintyInMeters,
+  -- TAXON
+  CASE
+    WHEN o.'Sporen Waarnemingen Naam' = 'Blauwalg' THEN 'Bacteria'
+    WHEN o.'Sporen Waarnemingen Naam' = 'Japanse duizendknoop' OR
+      o.'Sporen Waarnemingen Naam' = 'Reuzenberenklauw' OR
+      o.'Sporen Waarnemingen Naam' = 'Parelvederkruid' OR
+      o.'Sporen Waarnemingen Naam' = 'Waterteunisbloem' OR
+      o.'Sporen Waarnemingen Naam' = 'Reuzenbalsemien' OR
+      o.'Sporen Waarnemingen Naam' = 'Grote waternavel' THEN 'Plantae'
+    ELSE 'Animalia'
+  END                                   AS kingdom,
   CASE
     WHEN o.'Sporen Waarnemingen Naam' = 'Blauwalg' THEN 'Cyanobacteria'
     WHEN o.'Sporen Waarnemingen Naam' = 'Japanse duizendknoop' THEN 'Fallopia japonica'
@@ -79,10 +126,9 @@ SELECT
     WHEN o.'Sporen Waarnemingen Naam' = 'Eekhoorn' THEN 'Sciurus vulgaris'
     WHEN o.'Sporen Waarnemingen Naam' = 'Galsbandparkiet' THEN 'Psittacula krameri'
     WHEN o.'Sporen Waarnemingen Naam' = 'Galsbandparkieten exoot' THEN 'Psittacula krameri'
-    WHEN o.'Sporen Waarnemingen Naam' = '11 waterschildpadden' THEN  'Emydidae'
+    WHEN o.'Sporen Waarnemingen Naam' = '11 waterschildpadden' THEN 'Emydidae'
     WHEN o.'Sporen Waarnemingen Naam' = 'waterschildpad' THEN 'Emydidae'
-    -- Castor fiber unchanged
-    WHEN o.'Sporen Waarnemingen Naam' = 'Castor fiber' THEN 'Castor fiber'
+    WHEN o.'Sporen Waarnemingen Naam' = 'Castor fiber' THEN 'Castor fiber' -- Castor fiber unchanged
     WHEN o.'Sporen Waarnemingen Naam' = 'Wolhandkrab' THEN 'Eriocheir sinensis'
     WHEN o.'Sporen Waarnemingen Naam' = 'Nijlgans' THEN 'Alopochen aegyptiacus'
     WHEN o.'Sporen Waarnemingen Naam' = 'Nijlganzen nest' THEN 'Alopochen aegyptiacus'
@@ -102,59 +148,17 @@ SELECT
     WHEN o.'Sporen Waarnemingen Naam' = 'Prooi van otter (karper)' THEN 'Cyprinus carpio'
     WHEN o.'Sporen Waarnemingen Naam' = 'Oeverzwaluwen' THEN 'Riparia riparia'
     ELSE NULL
-  END                                   AS scientificName,
-  o.'Registratie ID' || ':' || o.'species_name_hash' AS occurrenceID,
-  o.'Team Naam'                         AS recordedBy,
-  CASE
-    WHEN o.'Sporen Waarnemingen Naam' = '11 waterschildpadden' THEN 11
-    WHEN o.'Sporen Waarnemingen Naam' = '100  canadese ganzen' THEN 100
-    ELSE NULL
-  END                                   AS individualCount,
-  CASE
-    WHEN o.'Sporen Waarnemingen Naam' = 'Bruine ratten. geen spore' THEN 'many'
-    WHEN o.'Sporen Waarnemingen Naam' = 'Woelratten' THEN 'many'
-    WHEN o.'Sporen Waarnemingen Naam' = 'Konijnen' THEN 'many'
-    WHEN o.'Sporen Waarnemingen Naam' = 'Galsbandparkieten exoot' THEN 'many'
-    WHEN o.'Sporen Waarnemingen Naam' = '11 waterschildpadden' THEN 11
-    WHEN o.'Sporen Waarnemingen Naam' = 'Nijlganzen nest' THEN 'many'
-    WHEN o.'Sporen Waarnemingen Naam' = 'Geelwangwaterschildpadden' THEN 'many'
-    WHEN o.'Sporen Waarnemingen Naam' = '100  canadese ganzen' THEN 100
-    WHEN o.'Sporen Waarnemingen Naam' = 'Eendensterfte circa 25 st' THEN '~25'
-    WHEN o.'Sporen Waarnemingen Naam' = 'Oeverzwaluwen' THEN 'many'
-    ELSE NULL
-  END                                   AS organismQuantityValue,
-  'individuals'                         AS organismQuantityType,
-  CASE
-    WHEN o.'Sporen Waarnemingen Naam' = 'Koe gered uit dyle' THEN 'cultivated'
-    ELSE NULL
-  END                                   AS establishmentMeans,
-  CASE
-    WHEN o.'Sporen Waarnemingen Naam' = 'Blauwalg' THEN 'Bacteria'
-    WHEN o.'Sporen Waarnemingen Naam' = 'Japanse duizendknoop' OR
-      o.'Sporen Waarnemingen Naam' = 'Reuzenberenklauw' OR
-      o.'Sporen Waarnemingen Naam' = 'Parelvederkruid' OR
-      o.'Sporen Waarnemingen Naam' = 'Waterteunisbloem' OR
-      o.'Sporen Waarnemingen Naam' = 'Reuzenbalsemien' OR
-      o.'Sporen Waarnemingen Naam' = 'Grote waternavel' THEN 'Plantae'
-    ELSE 'Animalia'
-  END                                   AS kingdom,
-  CASE
-    WHEN o.'Registratie Verwijderd Omschrijving' = 'Verwijderd' THEN 'eradicated'
-    WHEN o.'Sporen Waarnemingen Naam' = 'Eendensterfte circa 25 st' THEN 'found dead'
-    WHEN o.'Sporen Waarnemingen Naam' = 'Pootafdrukken wasbeer' THEN 'footprints'
-    WHEN o.'Sporen Waarnemingen Naam' = 'Nijlganzen nest' THEN 'nest'
-  ELSE NULL
-  END                                   AS occurrenceRemarks
+  END                                   AS scientificName
 FROM observations AS o
   LEFT JOIN life_mica_obs as l
   ON l.registration_id = o.'Registratie ID'
 WHERE
-  -- remove observations published in LIFE MICA dataset
-  l.registration_id  IS NULL AND
-  -- remove errors
+  -- Remove observations published in LIFE MICA dataset
+  l.registration_id IS NULL AND
+  -- Remove errors
   o.'Sporen Waarnemingen Naam' != 'Lierke' AND
   o.'Sporen Waarnemingen Naam' != ',' AND
-  -- remove too generic taxa or observations not related to any taxon
+  -- Remove too generic taxa or observations not related to any taxon
   o.'Sporen Waarnemingen Naam' != 'Vissterfte' AND
   o.'Sporen Waarnemingen Naam' != 'Massale vissterfte' AND
   o.'Sporen Waarnemingen Naam' != 'Katvisjes,  zonnebaars' AND
