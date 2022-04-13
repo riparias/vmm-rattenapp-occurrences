@@ -45,11 +45,11 @@ SELECT
   END                                   AS waterBody,
   CASE
     WHEN o.`Provincie Omschrijving` = 'Antwerpen' THEN 'Antwerp'
+    WHEN o.`Provincie Omschrijving` = 'Limburg' THEN 'Limburg'
+    WHEN o.`Provincie Omschrijving` = 'Onbekend' THEN NULL
     WHEN o.`Provincie Omschrijving` = 'Oost-Vlaanderen' THEN 'East Flanders'
     WHEN o.`Provincie Omschrijving` = 'Vlaams-Brabant' THEN 'Flemish Brabant'
-    WHEN o.`Provincie Omschrijving` = 'Limburg' THEN 'Limburg'
     WHEN o.`Provincie Omschrijving` = 'West-Vlaanderen' THEN 'West Flanders'
-    WHEN o.`Provincie Omschrijving` = 'Onbekend' THEN NULL
   END                                   AS stateProvince,
   CASE
     WHEN o.'Gemeente Naam' = 'Onbekend' THEN NULL
