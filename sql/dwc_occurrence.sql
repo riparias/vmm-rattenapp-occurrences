@@ -56,18 +56,16 @@ SELECT
     ELSE  o.'Gemeente Naam'
   END                                   AS municipality,
   CASE
-    WHEN o.'VHA Categorie Omschrijving' = 'CAT1 - Onbevaarbaar cat. 1'
-      THEN 'CAT1 - not navigable cat. 1'
-    WHEN o.'VHA Categorie Omschrijving' = 'CAT2 - Onbevaarbaar cat. 2'
-      THEN 'CAT2 - not navigable cat. 2'
-    WHEN o.'VHA Categorie Omschrijving' = 'CAT3 - Onbevaarbaar cat. 3'
-      THEN 'CAT3 - not navigable cat. 3'
-    WHEN o.'VHA Categorie Omschrijving' = 'CAT - Andere'
-      THEN 'CAT - other'
-    WHEN o.'VHA Categorie Omschrijving' = 'ONB - Onbekend'
-      THEN 'ONB - unknown'
-    WHEN o.'VHA Categorie Omschrijving' = 'BEV - Bevaarbaar'
-      THEN 'BEV - navigable'
+    WHEN o.'VHA Categorie Omschrijving' = 'Baangracht' THEN NULL
+    WHEN o.'VHA Categorie Omschrijving' = 'Bevaarbaar' THEN 'BEV - waterway navigable'
+    WHEN o.'VHA Categorie Omschrijving' = 'Grachten algemeen belang' THEN NULL
+    WHEN o.'VHA Categorie Omschrijving' = 'Niet geklasseerd' THEN NULL
+    WHEN o.'VHA Categorie Omschrijving' = 'Onbekend' THEN NULL
+    WHEN o.'VHA Categorie Omschrijving' = 'Onbevaarbaar cat. 1' THEN 'CAT1 - waterway not navigable cat. 1'
+    WHEN o.'VHA Categorie Omschrijving' = 'Onbevaarbaar cat. 2' THEN 'CAT2 - waterway not navigable cat. 2'
+    WHEN o.'VHA Categorie Omschrijving' = 'Onbevaarbaar cat. 3' THEN 'CAT3 - waterway not navigable cat. 3'
+    WHEN o.'VHA Categorie Omschrijving' = 'Polder of wateringgracht' THEN NULL
+    ELSE NULL
   END                                   AS locationRemarks,
   printf('%.5f', ROUND(o.'Locatie GPS Breedte', 5)) AS decimalLatitude,
   printf('%.5f', ROUND(o.'Locatie GPS Lengte', 5)) AS decimalLongitude,
