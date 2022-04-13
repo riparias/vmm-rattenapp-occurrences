@@ -6,9 +6,7 @@ This repository contains the functionality to standardize the data of the rat-ca
 
 ## Workflow
 
-[source data](data/raw) → Darwin Core [mapping script](src/dwc_mapping.Rmd) → generated [Darwin Core files](data/processed)
-
-The core mapping is done via a [SQL file](sql/) integrated in the [mapping script](src/dwc_mapping.Rmd).
+[source data](data/raw) → Darwin Core [mapping script](src/dwc_mapping.Rmd) using [SQL](sql/) → generated [Darwin Core files](data/processed)
 
 ## Published dataset
 
