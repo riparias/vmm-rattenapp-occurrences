@@ -48,11 +48,9 @@ SELECT
 -- EVENT
   o.'Registratie ID'                    AS eventID,
   date(o.Dag)                           AS eventDate,
-  o.Jaar                                AS year,
 -- LOCATION
   o.'Locatie ID'                        AS locationID,
   'Europe'                              AS continent,
-  'Belgium'                             AS country,
   'BE'                                  AS countryCode,
   CASE
     WHEN o.'VHA Gewestelijke Waterloop Omschrijving' = 'Onbekend' THEN NULL
