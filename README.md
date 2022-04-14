@@ -2,11 +2,11 @@
 
 ## Rationale
 
-This repository contains the functionality to standardize the data of the rat-catchers team of the [Flanders Environment Agency (VMM)](https://en.vmm.be/) to a [Darwin Core Archive](https://ipt.gbif.org/manual/en/ipt/2.5/dwca-guide) that can be harvested by [GBIF IPT](http://www.gbif.org/).
+This repository contains the functionality to standardize the rattenapp data of the [Flanders Environment Agency (VMM)](https://en.vmm.be/) to a [Darwin Core Archive](https://www.gbif.org/darwin-core) that can be harvested by [GBIF](https://www.gbif.org/).
 
 ## Workflow
 
-[source data](data/raw) → Darwin Core [mapping script](src/dwc_mapping.Rmd) using [SQL](sql/) → generated [Darwin Core files](data/processed)
+[source data](data/raw) → Darwin Core [mapping script](src/dwc_mapping.Rmd) using [SQL](sql) → generated [Darwin Core files](data/processed)
 
 ## Published dataset
 
