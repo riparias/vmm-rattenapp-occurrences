@@ -113,11 +113,11 @@ observations <-
 Create a SQLite database with the source data, so it can be queried with SQL in the next steps:
 
 ```{r create_db}
-rattenapp_db <- DBI::dbConnect(RSQLite::SQLite(), ":memory:")
+con <- DBI::dbConnect(RSQLite::SQLite(), ":memory:")
 # Import data
-DBI::dbWriteTable(rattenapp_db, "observations", observations)
+DBI::dbWriteTable(con, "observations", observations)
 # Import data to filter out
-DBI::dbWriteTable(rattenapp_db, "life_mica_obs", life_mica_obs)
+DBI::dbWriteTable(con, "life_mica_obs", life_mica_obs)
 ```
 
 # Darwin Core mapping
@@ -125,8 +125,8 @@ DBI::dbWriteTable(rattenapp_db, "life_mica_obs", life_mica_obs)
 Create [Occurrence](https://rs.gbif.org/core/dwc_occurrence_2022-02-02.xml) extension:
 
 ```{r occurrence}
-dwc_occurrence_sql <- glue::glue_sql(readr::read_file(here::here("sql", "dwc_occurrence.sql")), .con = rattenapp_db)
-dwc_occurrence <- DBI::dbGetQuery(rattenapp_db, dwc_occurrence_sql)
+dwc_occurrence_sql <- glue::glue_sql(readr::read_file(here::here("sql", "dwc_occurrence.sql")), .con = con)
+dwc_occurrence <- DBI::dbGetQuery(con, dwc_occurrence_sql)
 ```
 
 # Save data to CSV
