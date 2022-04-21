@@ -2,13 +2,11 @@
 
 ## Rationale
 
-This repository contains the functionality to standardize the data of the rat-catchers team of the [Flanders Environment Agency](https://en.vmm.be/) (VMM) to a [Darwin Core Archive](https://ipt.gbif.org/manual/en/ipt/2.5/dwca-guide) that can be harvested by a [GBIF IPT](https://ipt.gbif.org/manual/en/ipt/2.5/).
+This repository contains the functionality to standardize the rattenapp data of the [Flanders Environment Agency (VMM)](https://en.vmm.be/) to a [Darwin Core Archive](https://www.gbif.org/darwin-core) that can be harvested by [GBIF](https://www.gbif.org/).
 
 ## Workflow
 
-[source data](data/raw) → Darwin Core [mapping script](src/dwc_mapping.Rmd) → generated [Darwin Core files](data/processed)
-
-The core mapping is done via a [SQL file](sql/) integrated in the [mapping script](src/dwc_mapping.Rmd).
+[source data](data/raw) → Darwin Core [mapping script](src/dwc_mapping.Rmd) using [SQL](sql) → generated [Darwin Core files](data/processed)
 
 ## Published dataset
 
@@ -20,16 +18,16 @@ The core mapping is done via a [SQL file](sql/) integrated in the [mapping scrip
 The repository structure is based on [Cookiecutter Data Science](http://drivendata.github.io/cookiecutter-data-science/) and the [Checklist recipe](https://github.com/trias-project/checklist-recipe). Files and directories indicated with `GENERATED` should not be edited manually.
 
 ```
-├── README.md                           : Description of this repository
-├── LICENSE                             : Repository license
-├── vmm-rattenapp-occurrences.Rproj   : RStudio project file
-├── .gitignore                          : Files and directories to be ignored by git
+├── README.md              : Description of this repository
+├── LICENSE                : Repository license
+├── vmm-rattenapp-occurrences.Rproj : RStudio project file
+├── .gitignore             : Files and directories to be ignored by git
 │
 ├── src
 │   └── dwc_mapping.Rmd    : Darwin Core mapping script
 |
 ├── sql                    : Darwin Core transformations
-│   ├── dwc_occurrence.sql
+│   └── dwc_occurrence.sql
 │   
 └── data
     ├── raw                : Source data, input for mapping script

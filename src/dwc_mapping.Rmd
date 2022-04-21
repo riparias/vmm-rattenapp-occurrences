@@ -2,6 +2,7 @@
 title: "Darwin Core mapping of VMM rattenapp data"
 author:
 - Damiano Oldoni
+- Peter Desmet
 date: "`r Sys.Date()`"
 output:
   html_document:
@@ -11,8 +12,6 @@ output:
     toc_depth: 3
     toc_float: yes
 ---
-
-This document describes how (and contains the code to) transform the rattenapp data of the [Flanders Environment Agency](https://en.vmm.be/) (VMM) to a [Darwin Core Archive](https://ipt.gbif.org/manual/en/ipt/2.5/dwca-guide) that can be uploaded to an [IPT](https://ipt.gbif.org/manual/en/ipt/2.5/).
 
 # Setup 
 
@@ -34,65 +33,68 @@ if (!all(required %in% installed)) {
 Load libraries:
 
 ```{r load_pkgs, message = FALSE}
-library(dplyr)          # To use pipes and perform basic data science
-library(readr)          # To read and write text files
-library(purrr)          # To easily work with functions and vectors
-library(stringr)          # To work with strings
+library(dplyr)          # To transform data
+library(readr)          # To read and write tabular text files
+library(purrr)          # To work with lists
+library(stringr)        # To work with strings
 library(here)           # To find files
 library(glue)           # To insert variables in strings
-library(readxl)         # To write files
+library(readxl)         # To read Excel files
 library(DBI)            # To create and query databases
-library(RSQLite)        # To work with SQLite databases in R
+library(RSQLite)        # To work with SQLite databases
 library(digest)         # To generate hashes
 ```
 
 # Read source data
 
-The source data were provided manually and stored in `data/raw`. If this workflow can be fully automated, replace with querying from VMm endpoints.
+The source data were provided manually and stored in `data/raw`. If this workflow can be fully automated, replace with querying from VMM endpoints.
 
 Read source files:
 
 ```{r read_raw_data}
-# plants
+# Plants
 raw_plants_filename <- "Dieren en Planten Waarnemingen 2016-2021.xlsx"
-# get all sheets
+# Get all sheets
 raw_plants_sheets <- readxl::excel_sheets(
   path = here::here("data", "raw", raw_plants_filename)
 )
-# get all observations from all sheets in one data.frame
+# Get all observations from all sheets in one data.frame
 observations_plants <- purrr::map_dfr(
   raw_plants_sheets, ~readxl::read_xlsx(
     path = here::here("data", "raw", raw_plants_filename),
     sheet = .)) %>% 
   mutate(across(everything(), as.character))
 
-# animals
+# Animals
 raw_animals_filename <- "Dieren en Planten Waarnemingen T14_59_52.xlsx"
-# get all sheets
+# Get all sheets
 raw_animals_sheets <- readxl::excel_sheets(
   path = here::here("data", "raw", raw_animals_filename)
 )
-# get all observations from all sheets in one data.frame
+# Get all observations from all sheets in one data.frame
 observations_animals <- purrr::map_dfr(
   raw_animals_sheets, ~readxl::read_xlsx(
     path = here::here("data", "raw", raw_animals_filename),
     sheet = .)) %>% 
   mutate(across(everything(), as.character))
 
-# merge plants and animals data
+# Merge plants and animals data
 observations <- dplyr::bind_rows(observations_plants, observations_animals)
 ```
 
 Read [LIFE MICA dataset](https://www.gbif.org/dataset/3634aee3-41d5-4aa2-8cb5-875859f62a3a) as downloaded from GBIF (https://doi.org/10.15468/dl.ansxse). These data should not be published twice and therefore should be filtered out.
 
 ```{r life_mica_data}
-life_mica_obs <- readr::read_tsv(
-  here::here("data", "external", "0218803-210914110416597_occurrence.txt"),
-  col_types = cols(.default = "c")) %>%
-  # retrieve original event IDs
+life_mica_obs <-
+  readr::read_tsv(
+    here::here("data", "external", "0218803-210914110416597_occurrence.txt"),
+    col_types = cols(.default = "c")) %>%
+  
+  # Retrieve original event IDs
   mutate(registration_id = stringr::str_remove_all(
     string = .data$eventID, 
-    pattern = "MICA:VMM:EV:"))
+    pattern = "MICA:VMM:EV:")
+  )
 ```
 
 ## Generate hashes for species names
@@ -100,12 +102,11 @@ life_mica_obs <- readr::read_tsv(
 We generate a hash based on the species name as saved in column `Sporen Waarnemingen Naam`. This is needed to create a unique `occurrenceID` of the form `eventID:hash` where `eventID` is the unique identifier of the event as defined in column `Registratie ID`. As long as the species name doesn't change, the hash and so the `occurrenceID` will be stable:
 
 ```{r generate_hashes}
-# Vectorize the digest function (The digest() function isn't vectorized. So if you pass in a vector, you get one value for the whole vector rather than a digest for each element of the vector):
 vdigest <- Vectorize(digest)
-# Generate hashes:
-observations <- observations %>% 
-  mutate(species_name_hash = vdigest (.data$`Sporen Waarnemingen Naam`,
-                                      algo="md5"))
+# Generate hashes
+observations <-
+  observations %>% 
+  mutate(species_name_hash = vdigest(.data$`Sporen Waarnemingen Naam`, algo = "md5"))
 ```
 
 ## Create database
@@ -113,11 +114,11 @@ observations <- observations %>%
 Create a SQLite database with the source data, so it can be queried with SQL in the next steps:
 
 ```{r create_db}
-rattenapp_db <- DBI::dbConnect(RSQLite::SQLite(), ":memory:")
+con <- DBI::dbConnect(RSQLite::SQLite(), ":memory:")
 # Import data
-DBI::dbWriteTable(rattenapp_db, "observations", observations)
+DBI::dbWriteTable(con, "observations", observations)
 # Import data to filter out
-DBI::dbWriteTable(rattenapp_db, "life_mica_obs", life_mica_obs)
+DBI::dbWriteTable(con, "life_mica_obs", life_mica_obs)
 ```
 
 # Darwin Core mapping
@@ -125,8 +126,8 @@ DBI::dbWriteTable(rattenapp_db, "life_mica_obs", life_mica_obs)
 Create [Occurrence](https://rs.gbif.org/core/dwc_occurrence_2022-02-02.xml) extension:
 
 ```{r occurrence}
-dwc_occurrence_sql <- glue::glue_sql(readr::read_file(here::here("sql", "dwc_occurrence.sql")), .con = rattenapp_db)
-dwc_occurrence <- DBI::dbGetQuery(rattenapp_db, dwc_occurrence_sql)
+dwc_occurrence_sql <- glue::glue_sql(readr::read_file(here::here("sql", "dwc_occurrence.sql")), .con = con)
+dwc_occurrence <- DBI::dbGetQuery(con, dwc_occurrence_sql)
 ```
 
 # Save data to CSV
