@@ -11,7 +11,7 @@ SELECT
   'http://www.inbo.be/en/norms-for-data-use' AS accessRights,
   NULL                                  AS datasetID,
   'VMM'                                 AS institutionCode,
-  'The rattenapp data (PROVISIONAL)'    AS datasetName,
+  'Rat control occurrences collected by VMM in Flanders, Belgium' AS datasetName,
   'HumanObservation'                    AS basisOfRecord,
   *
 FROM (
