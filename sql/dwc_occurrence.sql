@@ -12,9 +12,14 @@ SELECT
   'VMM'                                 AS institutionCode,
   'Rat control occurrences collected by VMM in Flanders, Belgium' AS datasetName,
   'HumanObservation'                    AS basisOfRecord,
+  CASE
+    WHEN o."Registratie Verwijderd Omschrijving" = 'Verwijderd' THEN 'eradicated'
+    ELSE 'casual observation'
+  END                                   AS samplingProtocol,
+
 -- OCCURRENCE
   o."Registratie ID" || ':' || o."species_name_hash" AS occurrenceID,
-  o."Team Naam"                         AS recordedBy,
+  'Team ' || o."Team Naam"              AS recordedBy,
   CASE
     WHEN o."Sporen Waarnemingen Naam" = '11 waterschildpadden' THEN 11
     WHEN o."Sporen Waarnemingen Naam" = '100  canadese ganzen' THEN 100
@@ -26,7 +31,6 @@ SELECT
     ELSE NULL
   END                                   AS establishmentMeans,
   CASE
-    WHEN o."Registratie Verwijderd Omschrijving" = 'Verwijderd' THEN 'eradicated'
     WHEN o."Sporen Waarnemingen Naam" = 'Eendensterfte circa 25 st' THEN 'found dead'
     WHEN o."Sporen Waarnemingen Naam" = 'Pootafdrukken wasbeer' THEN 'found as tracks'
     WHEN o."Sporen Waarnemingen Naam" = 'Nijlganzen nest' THEN 'found as nest'
