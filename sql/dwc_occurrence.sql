@@ -136,7 +136,7 @@ SELECT
       o."Sporen Waarnemingen Naam" = 'Grote waternavel' THEN 'Plantae'
     ELSE 'Animalia'
   END                                   AS kingdom
-FROM observations AS o
+FROM occurrences AS o
   LEFT JOIN life_mica_obs AS l
   ON l.registration_id = o."Registratie ID"
 WHERE

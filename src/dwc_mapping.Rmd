@@ -34,6 +34,7 @@ Load libraries:
 
 ```{r load_pkgs, message = FALSE}
 library(dplyr)          # To transform data
+library(tidylog)        # To provide feedback on dplyr functions
 library(readr)          # To read and write tabular text files
 library(purrr)          # To work with lists
 library(stringr)        # To work with strings
@@ -78,7 +79,7 @@ observations_animals <- purrr::map_dfr(
     sheet = .)) %>% 
   mutate(across(everything(), as.character))
 
-# Merge plants and animals data
+# Merge plants and animals observations
 observations <- dplyr::bind_rows(observations_plants, observations_animals)
 ```
 
@@ -97,6 +98,41 @@ life_mica_obs <-
   )
 ```
 
+We got also catches from 2021 apart. We remove from `observations` the observations related to catches (same registration ID and species name) as they are duplicates:
+
+```{r catches_2021}
+# catches
+catches_filename <- "Vangsten T13_05_14.xlsx"
+# Get all sheets
+catches_sheets <- readxl::excel_sheets(
+  path = here::here("data", "raw", catches_filename)
+)
+# Get all observations from all sheets in one data.frame
+catches_2021 <- purrr::map_dfr(
+  catches_sheets, ~readxl::read_xlsx(
+    path = here::here("data", "raw", catches_filename),
+    sheet = .)) %>% 
+  mutate(across(everything(), as.character))
+
+catches_2021 <- 
+  catches_2021 %>%
+  relocate(one_of(names(observations)))
+
+# Remove observations included in catches (same registrationID and species)
+observations <- 
+  observations %>%
+  anti_join(catches_2021 %>% dplyr::select(`Registratie ID`, 
+                                           `Sporen Waarnemingen Naam`),
+            by = c("Registratie ID", "Sporen Waarnemingen Naam"))
+```
+
+We can now proceed by merging `catches_2021` and  `observations`:
+
+```{r merge_catches_obs}
+occurrences <- bind_rows(observations, catches_2021)
+```
+
+
 ## Generate hashes for species names
 
 We generate a hash based on the species name as saved in column `Sporen Waarnemingen Naam`. This is needed to create a unique `occurrenceID` of the form `eventID:hash` where `eventID` is the unique identifier of the event as defined in column `Registratie ID`. As long as the species name doesn't change, the hash and so the `occurrenceID` will be stable:
@@ -104,8 +140,8 @@ We generate a hash based on the species name as saved in column `Sporen Waarnemi
 ```{r generate_hashes}
 vdigest <- Vectorize(digest)
 # Generate hashes
-observations <-
-  observations %>% 
+occurrences <-
+  occurrences %>% 
   mutate(species_name_hash = vdigest(.data$`Sporen Waarnemingen Naam`, algo = "md5"))
 ```
 
@@ -116,7 +152,7 @@ Create a SQLite database with the source data, so it can be queried with SQL in 
 ```{r create_db}
 con <- DBI::dbConnect(RSQLite::SQLite(), ":memory:")
 # Import data
-DBI::dbWriteTable(con, "observations", observations)
+DBI::dbWriteTable(con, "occurrences", occurrences)
 # Import data to filter out
 DBI::dbWriteTable(con, "life_mica_obs", life_mica_obs)
 ```
