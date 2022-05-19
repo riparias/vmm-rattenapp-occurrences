@@ -5,6 +5,7 @@ Created by Damiano Oldoni (INBO)
 SELECT
 -- RECORD-LEVEL
   'Event'                               AS type,
+  'en'                                  AS language,
   'http://creativecommons.org/publicdomain/zero/1.0/' AS license,
   'VMM'                                 AS rightsHolder,
   'http://www.inbo.be/en/norms-for-data-use' AS accessRights,
