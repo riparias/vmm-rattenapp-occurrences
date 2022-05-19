@@ -46,11 +46,11 @@ date(o.Dag)                           AS eventDate,
 o."Locatie ID"                        AS locationID,
 'Europe'                              AS continent,
 CASE
-WHEN o.Land_Regio = 'Nederland'     THEN 'ISO_3166-2:NL'
-WHEN o.Land_Regio = 'Frankrijk'     THEN 'ISO_3166-2:FR'
-WHEN o.Land_Regio = 'Vlaanderen'    THEN 'ISO_3166-2:BE'
+WHEN o.Land_Regio = 'Nederland'     THEN 'NL'
+WHEN o.Land_Regio = 'Frankrijk'     THEN 'FR'
+WHEN o.Land_Regio = 'Vlaanderen'    THEN 'BE'
  -- observations have no Land_Regio field and are assumed to be taken in Belgium
-WHEN o.Land_Regio IS NULL           THEN 'ISO_3166-2:BE'
+WHEN o.Land_Regio IS NULL           THEN 'BE'
 ELSE NULL
 END                                   AS countryCode,
 CASE
