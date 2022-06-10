@@ -9,7 +9,7 @@ SELECT
   'http://creativecommons.org/publicdomain/zero/1.0/' AS license,
   'VMM'                                 AS rightsHolder,
   'http://www.inbo.be/en/norms-for-data-use' AS accessRights,
-  NULL                                  AS datasetID,
+  'https://doi.org/10.15468/wquzva'     AS datasetID,
   'VMM'                                 AS institutionCode,
   'Rat control occurrences collected by VMM in Flanders, Belgium' AS datasetName,
   'HumanObservation'                    AS basisOfRecord,
