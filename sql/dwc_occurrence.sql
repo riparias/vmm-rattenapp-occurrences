@@ -163,6 +163,8 @@ WHERE
   -- Remove errors
   o."Sporen Waarnemingen Naam" != 'Lierke' AND
   o."Sporen Waarnemingen Naam" != ',' AND
+  -- Remove bred animals
+  o."Sporen Waarnemingen Naam" != 'Koe gered uit dyle' AND
   -- Remove too generic taxa or observations not related to any taxon
   o."Sporen Waarnemingen Naam" != 'Vissterfte' AND
   o."Sporen Waarnemingen Naam" != 'Vis' AND
