@@ -30,10 +30,6 @@ SELECT
     ELSE NULL
   END                                   AS individualCount,
 CASE
-WHEN o."Sporen Waarnemingen Naam" = 'Koe gered uit dyle' THEN 'introduced'
-ELSE NULL
-END                                   AS establishmentMeans,
-CASE
 WHEN o."Sporen Waarnemingen Naam" = 'Eendensterfte circa 25 st' THEN 'found dead'
 WHEN o."Sporen Waarnemingen Naam" = 'Pootafdrukken wasbeer' THEN 'found as tracks'
 WHEN o."Sporen Waarnemingen Naam" = 'Nijlganzen nest' THEN 'found as nest'
@@ -134,7 +130,6 @@ WHEN o."Sporen Waarnemingen Naam" = 'Wezeltje' THEN 'Mustela nivalis'
 WHEN o."Sporen Waarnemingen Naam" = 'Otter' THEN 'Lutra'
 WHEN o."Sporen Waarnemingen Naam" = 'Hazelworm' THEN 'Anguis fragilis'
 WHEN o."Sporen Waarnemingen Naam" = 'Egel' THEN 'Erinaceus europaeus'
-WHEN o."Sporen Waarnemingen Naam" = 'Koe gered uit dyle' THEN 'Bos taurus'
 WHEN o."Sporen Waarnemingen Naam" = 'Eendensterfte circa 25 st' THEN 'Anatidae'
 WHEN o."Sporen Waarnemingen Naam" = 'Prooi van otter (karper)' THEN 'Cyprinus carpio'
 WHEN o."Sporen Waarnemingen Naam" = 'Oeverzwaluwen' THEN 'Riparia riparia'
