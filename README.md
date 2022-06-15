@@ -10,8 +10,8 @@ This repository contains the functionality to standardize the rattenapp data of 
 
 ## Published dataset
 
-* [Dataset on the IPT](#) - TBD
-* [Dataset on GBIF](#) - TBD
+* [Dataset on the IPT](https://ipt.inbo.be/resource?r=vmm-rattenapp-occurrences)
+* [Dataset on GBIF](https://doi.org/10.15468/wquzva)
 
 ## Repo structure
 
