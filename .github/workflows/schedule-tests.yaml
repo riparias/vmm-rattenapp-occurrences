@@ -2,7 +2,7 @@ on:
   push:
     branches:
       - main
-      -automatic-update
+      - automatic-update
 
 name: run-tests
 
