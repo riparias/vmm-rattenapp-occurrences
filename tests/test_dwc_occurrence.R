@@ -1,6 +1,11 @@
-library(testthat) # to perform tests
-library(readr) # to read csv files
-library(dplyr) # to work with data.frames
+if (!require("pacman")) install.packages("pacman")
+pacman::p_load(
+  testthat, # to perform tests
+  readr, # to read csv files
+  dplyr # to work with data.frames
+)
+
+
 
 occs_url <- "https://raw.githubusercontent.com/riparias/vmm-rattenapp-occurrences/automatic-update/data/processed/occurrence.csv"
 dwc_occurrence <- readr::read_csv(occs_url, guess_max = 10000)
