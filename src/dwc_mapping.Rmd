@@ -16,7 +16,7 @@ output:
 # Setup 
 
 ```{r setup, include = FALSE}
-knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = TRUE)
+knitr::opts_chunk$set(echo = TRUE, warning = TRUE, message = TRUE)
 ```
 
 Install required libraries (if not yet installed):
@@ -116,7 +116,9 @@ catches_2021 <- purrr::map_dfr(
 
 catches_2021 <- 
   catches_2021 %>%
-  relocate(one_of(names(observations)))
+  relocate(
+    one_of(names(observations)[names(observations) %in% names(catches_2021)])
+)
 
 # Remove observations included in catches (same registrationID and species)
 observations <- 

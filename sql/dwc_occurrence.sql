@@ -26,7 +26,7 @@ SELECT
     WHEN o."Vangst Aantal" IS NULL AND o."Sporen Waarnemingen Naam" = '11 waterschildpadden' THEN 11
     WHEN o."Vangst Aantal" IS NULL AND o."Sporen Waarnemingen Naam" = '100  canadese ganzen' THEN 100
     WHEN o."Vangst Aantal" IS NULL AND o."Sporen Waarnemingen Naam" = 'Eendensterfte circa 25 st' THEN 25
-    WHEN o."Vangst Aantal" IS NOT NULL THEN o."Vangst Aantal"
+    WHEN o."Vangst Aantal" IS NOT NULL THEN CAST(o."Vangst Aantal" AS INT)
     ELSE NULL
   END                                   AS individualCount,
 CASE
