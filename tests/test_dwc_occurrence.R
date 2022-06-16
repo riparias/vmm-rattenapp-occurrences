@@ -1,10 +1,10 @@
 # load needed packages (install if needed)
 installed <- rownames(installed.packages())
 required <- c(
-  curl, # to read files from URL
-  testthat, # to perform tests
-  readr, # to read csv files
-  dplyr # to work with data.frames
+  "curl", # to read files from URL
+  "testthat", # to perform tests
+  "readr", # to read csv files
+  "dplyr" # to work with data.frames
 )
 if (!all(required %in% installed)) {
   install.packages(required[!required %in% installed])
