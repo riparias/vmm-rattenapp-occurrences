@@ -41,13 +41,13 @@ jobs:
         shell: Rscript {0}
 
       - uses: devops-infra/action-commit-push@master
-          with:
-            github_token: "${{ secrets.GITHUB_TOKEN }}"
-            add_timestamp: true
-            commit_prefix: "[AUTO]"
-            commit_message: "Map to DwC"
-            force: false
-            # target_branch: update/version # default: current branch
+        with:
+          github_token: "${{ secrets.GITHUB_TOKEN }}"
+          add_timestamp: true
+          commit_prefix: "[AUTO]"
+          commit_message: "Map to DwC"
+          force: false
+          # target_branch: update/version # default: current branch
 
       - name: Run tests
         run: |
@@ -55,7 +55,7 @@ jobs:
         shell: Rscript {0}
 
       - uses: devops-infra/action-commit-push@master
-          with:
+        with:
           github_token: "${{ secrets.GITHUB_TOKEN }}"
           add_timestamp: true
           commit_prefix: "[AUTO]"
