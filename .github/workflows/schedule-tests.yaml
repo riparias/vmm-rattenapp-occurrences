@@ -21,14 +21,19 @@ jobs:
       R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
       RSPM: ${{ matrix.config.rspm }}
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
-    steps:
-      - uses: actions/checkout@v2
 
-      - uses: r-lib/actions/setup-r@master
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: setup R
+        uses: r-lib/actions/setup-r@master
         with:
           r-version: ${{ matrix.config.r }}
           http-user-agent: ${{ matrix.config.http-user-agent }}
-      - uses: r-lib/actions/setup-pandoc@master
+
+      - name: setup pandoc
+        uses: r-lib/actions/setup-pandoc@master
 
       - name: Run mapping
         run: |
@@ -36,13 +41,13 @@ jobs:
         shell: Rscript {0}
 
       - uses: devops-infra/action-commit-push@master
-      with:
-        github_token: "${{ secrets.GITHUB_TOKEN }}"
-        add_timestamp: true
-        commit_prefix: "[AUTO]"
-        commit_message: "Map to DwC"
-        force: false
-        # target_branch: update/version # default: current branch
+          with:
+            github_token: "${{ secrets.GITHUB_TOKEN }}"
+            add_timestamp: true
+            commit_prefix: "[AUTO]"
+            commit_message: "Map to DwC"
+            force: false
+            # target_branch: update/version # default: current branch
 
       - name: Run tests
         run: |
@@ -50,10 +55,10 @@ jobs:
         shell: Rscript {0}
 
       - uses: devops-infra/action-commit-push@master
-      with:
-        github_token: "${{ secrets.GITHUB_TOKEN }}"
-        add_timestamp: true
-        commit_prefix: "[AUTO]"
-        commit_message: "Perform tests"
-        force: false
-        # target_branch: update/version # default: current branch
+          with:
+          github_token: "${{ secrets.GITHUB_TOKEN }}"
+          add_timestamp: true
+          commit_prefix: "[AUTO]"
+          commit_message: "Perform tests"
+          force: false
+          # target_branch: update/version # default: current branch
