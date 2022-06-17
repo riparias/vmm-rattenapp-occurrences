@@ -11,6 +11,10 @@ if (!all(required %in% installed)) {
   install.packages(pkgs_to_install)
 }
 
+# load libraries
+library(testthat)
+library(readr)
+library(dplyr)
 
 # read proposed new version of the DwC mapping
 occs_url <- "https://raw.githubusercontent.com/riparias/vmm-rattenapp-occurrences/automatic-update/data/processed/occurrence.csv"
