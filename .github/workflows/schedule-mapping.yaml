@@ -55,7 +55,7 @@ jobs:
         shell: Rscript {0}
 
       - name: Run the Action
-        uses: devops-infra/action-pull-request@master
+        uses: devops-infra/action-pull-request@v0.4.2
         with:
           github_token: "${{ secrets.GITHUB_TOKEN }}"
           target_branch: main
