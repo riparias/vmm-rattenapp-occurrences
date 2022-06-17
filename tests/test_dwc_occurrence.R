@@ -67,8 +67,8 @@ testthat::test_that("If individualCount is NA, samplingProtocol is not rat trap"
     dwc_occurrence_update %>%
       dplyr::filter(is.na(individualCount)) %>%
       dplyr::distinct(samplingProtocol) %>%
-      arrange(samplingProtocol) %>%
-      pull(samplingProtocol),
+      dplyr::arrange(samplingProtocol) %>%
+      dplyr::pull(samplingProtocol),
     c("casual observation", "eradicated")
   )
 })
