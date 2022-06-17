@@ -1,4 +1,4 @@
-# load needed packages (install if needed)
+# install needed packages
 installed <- rownames(installed.packages())
 required <- c(
   "testthat", # to perform tests
