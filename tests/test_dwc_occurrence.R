@@ -7,7 +7,9 @@ required <- c(
   "dplyr" # to work with data.frames
 )
 if (!all(required %in% installed)) {
-  install.packages(required[!required %in% installed])
+  pkgs_to_install <- required[!required %in% installed]
+  print(pkgs_to_install)
+  install.packages(pkgs_to_install)
 }
 
 
