@@ -59,7 +59,7 @@ jobs:
         with:
           github_token: "${{ secrets.GITHUB_TOKEN }}"
           target_branch: main
-          title: [AUTO] Update data
+          title: "[AUTO] Update data"
           reviewer: damianooldoni
           label: automated workflow
           draft: false
