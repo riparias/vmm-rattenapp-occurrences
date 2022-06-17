@@ -53,7 +53,7 @@ The source data were provided manually and stored in `data/raw`. If this workflo
 Read source files:
 
 ```{r read_raw_data}
-# Plants
+# Plants up to 2021 included
 raw_plants_filename <- "Dieren en Planten Waarnemingen 2016-2021.xlsx"
 # Get all sheets
 raw_plants_sheets <- readxl::excel_sheets(
@@ -66,7 +66,7 @@ observations_plants <- purrr::map_dfr(
     sheet = .)) %>% 
   mutate(across(everything(), as.character))
 
-# Animals
+# Animals up to 2021 included
 raw_animals_filename <- "Dieren en Planten Waarnemingen T14_59_52.xlsx"
 # Get all sheets
 raw_animals_sheets <- readxl::excel_sheets(
@@ -101,37 +101,54 @@ life_mica_obs <-
 We got also catches from 2021 apart. We remove from `observations` the observations related to catches (same registration ID and species name) as they are duplicates:
 
 ```{r catches_2021}
-# catches
-catches_filename <- "Vangsten T13_05_14.xlsx"
+# catches 2021
+catches_2021_filename <- "Vangsten T13_05_14.xlsx"
+# Get all sheets
+catches_2021_sheets <- readxl::excel_sheets(
+  path = here::here("data", "raw", catches_2021_filename)
+)
+# Get all catches from all sheets in one data.frame
+catches_2021 <- purrr::map_dfr(
+  catches_2021_sheets, ~readxl::read_xlsx(
+    path = here::here("data", "raw", catches_2021_filename),
+    sheet = .)) %>% 
+  mutate(across(everything(), as.character))
+
+# catches from Jan 2022
+catches_filename <- "Vangsten 2022.xlsx"
 # Get all sheets
 catches_sheets <- readxl::excel_sheets(
   path = here::here("data", "raw", catches_filename)
 )
-# Get all observations from all sheets in one data.frame
-catches_2021 <- purrr::map_dfr(
+# Get all catches from all sheets in one data.frame
+catches <- purrr::map_dfr(
   catches_sheets, ~readxl::read_xlsx(
     path = here::here("data", "raw", catches_filename),
     sheet = .)) %>% 
   mutate(across(everything(), as.character))
 
-catches_2021 <- 
-  catches_2021 %>%
+# Merge all catches data
+catches <- bind_rows(catches_2021, catches)
+
+# Relocate columns based on cols observations
+catches <- 
+  catches %>%
   relocate(
     one_of(names(observations)[names(observations) %in% names(catches_2021)])
 )
 
-# Remove observations included in catches (same registrationID and species)
+# Remove observations in catches (same registrationID-species combination)
 observations <- 
   observations %>%
-  anti_join(catches_2021 %>% dplyr::select(`Registratie ID`, 
+  anti_join(catches %>% dplyr::select(`Registratie ID`, 
                                            `Sporen Waarnemingen Naam`),
             by = c("Registratie ID", "Sporen Waarnemingen Naam"))
 ```
 
-We can now proceed by merging `catches_2021` and  `observations`:
+We can now proceed by merging `catches` and  `observations`:
 
 ```{r merge_catches_obs}
-occurrences <- bind_rows(observations, catches_2021)
+occurrences <- bind_rows(observations, catches)
 ```
 
 ## Generate hashes for species names
