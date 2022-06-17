@@ -4,11 +4,12 @@ required <- c(
   "curl", # to read files from URL
   "testthat", # to perform tests
   "readr", # to read csv files
+  "magrittr", # to use pipe %>%
   "dplyr" # to work with data.frames
 )
 if (!all(required %in% installed)) {
   pkgs_to_install <- required[!required %in% installed]
-  print(pkgs_to_install)
+  print(paste("Packages to install:", paste(pkgs_to_install, collapse = ", ")))
   install.packages(pkgs_to_install)
 }
 
