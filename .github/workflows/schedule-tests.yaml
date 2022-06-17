@@ -40,25 +40,17 @@ jobs:
           source("src/run_dwc_mapping.R")
         shell: Rscript {0}
 
-      - uses: devops-infra/action-commit-push@master
+      - name: Commit changes
+        uses: devops-infra/action-commit-push@master
         with:
           github_token: "${{ secrets.GITHUB_TOKEN }}"
           add_timestamp: true
           commit_prefix: "[AUTO]"
           commit_message: "Map to DwC"
           force: false
-          # target_branch: update/version # default: current branch
+          target_branch:  automatic-update
 
       - name: Run tests
         run: |
           source("tests/test_dwc_occurrence.R")
         shell: Rscript {0}
-
-      - uses: devops-infra/action-commit-push@master
-        with:
-          github_token: "${{ secrets.GITHUB_TOKEN }}"
-          add_timestamp: true
-          commit_prefix: "[AUTO]"
-          commit_message: "Perform tests"
-          force: false
-          # target_branch: update/version # default: current branch
