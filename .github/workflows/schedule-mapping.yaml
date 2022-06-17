@@ -1,7 +1,6 @@
 on:
   push:
     branches:
-      - main
       - automatic-update
 
 name: run-mapping-and-tests
@@ -54,3 +53,16 @@ jobs:
         run: |
           source("tests/test_dwc_occurrence.R")
         shell: Rscript {0}
+
+      - name: Create pull request
+        uses: devops-infra/action-pull-request@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+        target_branch: main
+        title: [AUTO] Update data
+        template: .github/PULL_REQUEST_TEMPLATE.md
+        reviewer: damianooldoni
+        label: automated workflow
+        draft: false
+        get_diff: true
+        ignore_users: "dependabot"
