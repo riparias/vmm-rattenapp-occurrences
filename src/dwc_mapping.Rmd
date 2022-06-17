@@ -246,7 +246,7 @@ paste("Difference:", nrow(dwc_occurrence_update) - nrow(dwc_occurrence_main))
 
 ## New `Sporen Waarnemingen Naam` values
 
-The DwC `scientificName` is a manual mapping of Dutch vernacular names (e.g. `Roerdomp`) or expressions (e.g. `Eendensterfte circa 25 st`) in input field `Sporen Waarnemingen Naam`. It is therefore important to get a list with all new values:
+The DwC `scientificName` is a manual mapping of Dutch vernacular names (e.g. `Roerdomp`) or expressions (e.g. `Eendensterfte circa 25 st`) from field `Sporen Waarnemingen Naam`. It is therefore important to get a list with all new values:
 
 ```{r new_Sporen_Waarnemingen_Naam}
 occs_without_sc_name <- 

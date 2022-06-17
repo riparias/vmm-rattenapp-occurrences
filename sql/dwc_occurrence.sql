@@ -137,6 +137,7 @@ WHEN o."Sporen Waarnemingen Naam" = 'Waterhoen' THEN 'Gallinula chloropus'
 WHEN o."Sporen Waarnemingen Naam" = 'Meerkoet' THEN 'Fulica atra'
 WHEN o."Sporen Waarnemingen Naam" = 'Doodaars' THEN 'Tachybaptus ruficollis'
 WHEN o."Sporen Waarnemingen Naam" = 'Eend' THEN 'Anatidae'
+WHEN o."Sporen Waarnemingen Naam" = 'Aalscholver' THEN 'Phalacrocorax carbo'
 ELSE NULL
 END                                   AS scientificName,
 CASE
