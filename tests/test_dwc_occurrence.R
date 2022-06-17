@@ -20,6 +20,7 @@ library(dplyr)
 occs_url <- "https://raw.githubusercontent.com/riparias/vmm-rattenapp-occurrences/automatic-update/data/processed/occurrence.csv"
 dwc_occurrence_update <- readr::read_csv(occs_url, guess_max = 10000)
 
+# tests
 testthat::test_that("Right columns in right order", {
   columns <- c(
     "type",
