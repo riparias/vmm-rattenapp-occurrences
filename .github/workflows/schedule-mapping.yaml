@@ -47,6 +47,9 @@ jobs:
           commit_prefix: "[AUTO]"
           commit_message: "Map to DwC"
 
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
       - name: Run tests
         run: |
           source("tests/test_dwc_occurrence.R")
