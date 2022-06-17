@@ -54,13 +54,13 @@ jobs:
           source("tests/test_dwc_occurrence.R")
         shell: Rscript {0}
 
-      - name: Run the Action
+      - name: Create pull request
         uses: devops-infra/action-pull-request@v0.4.2
         with:
           github_token: "${{ secrets.GITHUB_TOKEN }}"
           target_branch: main
           title: "[AUTO] Update data"
-          reviewer: damianooldoni
+          assignee: damianooldoni
           label: automated workflow
           draft: false
           get_diff: true
