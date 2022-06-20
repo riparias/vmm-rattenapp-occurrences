@@ -37,7 +37,6 @@ jobs:
           template: .github/PULL_REQUEST_TEMPLATE.md
           reviewer: ${{ github.actor }}
           label: automated workflow
-          draft: false
           get_diff: false
           ignore_users: "dependabot"
 
