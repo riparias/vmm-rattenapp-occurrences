@@ -60,6 +60,7 @@ jobs:
           github_token: "${{ secrets.GITHUB_TOKEN }}"
           commit_prefix: "[AUTO]"
           commit_message: "Map to DwC"
+          target_branch: automatic-udpate
 
       - name: Checkout repository
         uses: actions/checkout@v2.3.4
