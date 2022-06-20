@@ -239,9 +239,11 @@ removed_occs
 Total number of rows of new DwC output in comparison with the previous version:
 
 ```{r nrows}
-paste("Number of occurrences (new):", nrow(dwc_occurrence_update))
-paste("Number of occurrences (old):", nrow(dwc_occurrence_main))
-paste("Difference:", nrow(dwc_occurrence_update) - nrow(dwc_occurrence_main))
+message(paste("Number of occurrences (new):", nrow(dwc_occurrence_update)))
+message(paste("Number of occurrences (old):", nrow(dwc_occurrence_main)))
+message(paste("Difference:", 
+              nrow(dwc_occurrence_update) - nrow(dwc_occurrence_main))
+)
 ```
 
 ## New `Sporen Waarnemingen Naam` values
