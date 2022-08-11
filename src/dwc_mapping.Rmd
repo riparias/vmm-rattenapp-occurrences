@@ -46,133 +46,15 @@ library(RSQLite)        # To work with SQLite databases
 library(digest)         # To generate hashes
 ```
 
-# Read source data
+## Connect to database
 
-The source data were provided manually and stored in `data/raw`. If this workflow can be fully automated, replace with querying from VMM endpoints.
-
-Read source files:
-
-```{r read_raw_data}
-# Plants up to 2021 included
-raw_plants_filename <- "Dieren en Planten Waarnemingen 2016-2021.xlsx"
-# Get all sheets
-raw_plants_sheets <- readxl::excel_sheets(
-  path = here::here("data", "raw", raw_plants_filename)
-)
-# Get all observations from all sheets in one data.frame
-observations_plants <- purrr::map_dfr(
-  raw_plants_sheets, ~readxl::read_xlsx(
-    path = here::here("data", "raw", raw_plants_filename),
-    sheet = .)) %>% 
-  mutate(across(everything(), as.character))
-
-# Animals up to 2021 included
-raw_animals_filename <- "Dieren en Planten Waarnemingen T14_59_52.xlsx"
-# Get all sheets
-raw_animals_sheets <- readxl::excel_sheets(
-  path = here::here("data", "raw", raw_animals_filename)
-)
-# Get all observations from all sheets in one data.frame
-observations_animals <- purrr::map_dfr(
-  raw_animals_sheets, ~readxl::read_xlsx(
-    path = here::here("data", "raw", raw_animals_filename),
-    sheet = .)) %>% 
-  mutate(across(everything(), as.character))
-
-# Merge plants and animals observations
-observations <- dplyr::bind_rows(observations_plants, observations_animals)
-```
-
-Read [LIFE MICA dataset](https://www.gbif.org/dataset/3634aee3-41d5-4aa2-8cb5-875859f62a3a) as downloaded from GBIF (https://doi.org/10.15468/dl.ansxse). These data should not be published twice and therefore should be filtered out.
-
-```{r life_mica_data}
-life_mica_obs <-
-  readr::read_tsv(
-    here::here("data", "external", "0218803-210914110416597_occurrence.txt"),
-    col_types = cols(.default = "c")) %>%
-  
-  # Retrieve original event IDs
-  mutate(registration_id = stringr::str_remove_all(
-    string = .data$eventID, 
-    pattern = "MICA:VMM:EV:")
-  )
-```
-
-We got also catches from 2021 apart. We remove from `observations` the observations related to catches (same registration ID and species name) as they are duplicates:
-
-```{r catches_2021}
-# catches 2021
-catches_2021_filename <- "Vangsten T13_05_14.xlsx"
-# Get all sheets
-catches_2021_sheets <- readxl::excel_sheets(
-  path = here::here("data", "raw", catches_2021_filename)
-)
-# Get all catches from all sheets in one data.frame
-catches_2021 <- purrr::map_dfr(
-  catches_2021_sheets, ~readxl::read_xlsx(
-    path = here::here("data", "raw", catches_2021_filename),
-    sheet = .)) %>% 
-  mutate(across(everything(), as.character))
-
-# catches from Jan 2022
-catches_filename <- "Vangsten 2022.xlsx"
-# Get all sheets
-catches_sheets <- readxl::excel_sheets(
-  path = here::here("data", "raw", catches_filename)
-)
-# Get all catches from all sheets in one data.frame
-catches <- purrr::map_dfr(
-  catches_sheets, ~readxl::read_xlsx(
-    path = here::here("data", "raw", catches_filename),
-    sheet = .)) %>% 
-  mutate(across(everything(), as.character))
-
-# Merge all catches data
-catches <- bind_rows(catches_2021, catches)
-
-# Relocate columns based on cols observations
-catches <- 
-  catches %>%
-  relocate(
-    one_of(names(observations)[names(observations) %in% names(catches_2021)])
-)
-
-# Remove observations in catches (same registrationID-species combination)
-observations <- 
-  observations %>%
-  anti_join(catches %>% dplyr::select(`Registratie ID`, 
-                                           `Sporen Waarnemingen Naam`),
-            by = c("Registratie ID", "Sporen Waarnemingen Naam"))
-```
-
-We can now proceed by merging `catches` and  `observations`:
-
-```{r merge_catches_obs}
-occurrences <- bind_rows(observations, catches)
-```
-
-## Generate hashes for species names
-
-We generate a hash based on the species name as saved in column `Sporen Waarnemingen Naam`. This is needed to create a unique `occurrenceID` of the form `eventID:hash` where `eventID` is the unique identifier of the event as defined in column `Registratie ID`. As long as the species name doesn't change, the hash and so the `occurrenceID` will be stable:
-
-```{r generate_hashes}
-vdigest <- Vectorize(digest)
-# Generate hashes
-occurrences <-
-  occurrences %>% 
-  mutate(species_name_hash = vdigest(.data$`Sporen Waarnemingen Naam`, algo = "md5"))
-```
-
-## Create database
-
-Create a SQLite database with the source data, so it can be queried with SQL in the next steps:
+Connect to the SQLite database with the occurrence data created in `fetch_data.Rmd`:
 
 ```{r create_db}
-con <- DBI::dbConnect(RSQLite::SQLite(), ":memory:")
-# Import data
-DBI::dbWriteTable(con, "occurrences", occurrences)
-# Import data to filter out
-DBI::dbWriteTable(con, "life_mica_obs", life_mica_obs)
+message("Connect to SQLite database...")
+sqlite_path <- here::here("data", "interim", "occurrences.sqlite")
+con <- DBI::dbConnect(RSQLite::SQLite(), dbname = sqlite_path)
+message("DONE")
 ```
 
 # Darwin Core mapping
@@ -180,8 +62,12 @@ DBI::dbWriteTable(con, "life_mica_obs", life_mica_obs)
 Create [Occurrence](https://rs.gbif.org/core/dwc_occurrence_2022-02-02.xml) extension:
 
 ```{r occurrence}
-dwc_occurrence_sql <- glue::glue_sql(readr::read_file(here::here("sql", "dwc_occurrence.sql")), .con = con)
+message("Map occurrences to DwC...")
+dwc_occurrence_sql <- glue::glue_sql(
+  readr::read_file(here::here("sql", "dwc_occurrence.sql")), 
+  .con = con)
 dwc_occurrence <- DBI::dbGetQuery(con, dwc_occurrence_sql)
+message("DONE")
 ```
 
 # Save data to CSV
@@ -208,11 +94,11 @@ dwc_occurrence_main <- readr::read_csv(
   col_types = cols(.default = "c"))
 ```
 
-and `automatic-update` branch:
+and actual branch (`automatic-update-*`):
  
 ```{r automatic-update}
 dwc_occurrence_update <- readr::read_csv(
-  file = "https://raw.githubusercontent.com/riparias/vmm-rattenapp-occurrences/automatic-update/data/processed/occurrence.csv",
+  file = here::here("data","processed","occurrence.csv"),
   col_types = cols(.default = "c"))
 ```
 
@@ -224,7 +110,8 @@ How many new occurrences, i.e. new `occurrenceID` values, have been added?
 new_occs <- 
   dwc_occurrence_update %>%
   filter(!.data$occurrenceID %in% dwc_occurrence_main$occurrenceID)
-new_occs
+message("New occurrences:")
+print(new_occs)
 ```
 
 Have some occurrences been removed?
@@ -233,7 +120,8 @@ Have some occurrences been removed?
 removed_occs <- 
   dwc_occurrence_main %>%
   filter(!.data$occurrenceID %in% dwc_occurrence_update$occurrenceID)
-removed_occs
+message("Removed occurrences:")
+print(removed_occs)
 ```
 
 Total number of rows of new DwC output in comparison with the previous version:
@@ -264,5 +152,6 @@ query <- glue::glue_sql("
   ", .con = con)
 query
 raw_sc_names <- dplyr::as_tibble(DBI::dbGetQuery(con, query))
+message("New values in field 'Sporen Waarnemingen Naam' to be mapped:")
 raw_sc_names
 ```

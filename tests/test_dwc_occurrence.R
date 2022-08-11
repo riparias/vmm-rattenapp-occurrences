@@ -2,6 +2,7 @@
 installed <- rownames(installed.packages())
 required <- c(
   "testthat", # to perform tests
+  "here", # to find files
   "readr", # to read csv files
   "dplyr" # to work with data.frames
 )
@@ -17,7 +18,7 @@ library(readr)
 library(dplyr)
 
 # read proposed new version of the DwC mapping
-occs_url <- "https://raw.githubusercontent.com/riparias/vmm-rattenapp-occurrences/automatic-update/data/processed/occurrence.csv"
+occs_path <- "./data/processed/occurrence.csv"
 dwc_occurrence_update <- readr::read_csv(occs_url, guess_max = 10000)
 
 # tests
@@ -66,7 +67,7 @@ testthat::test_that("eventID is always present", {
   testthat::expect_true(all(!is.na(dwc_occurrence_update$eventID)))
 })
 
-testthat::test_that("If individualCount is NA, samplingProtocol is not rat trap", {
+testthat::test_that("if individualCount is NA, samplingProtocol is not rat trap", {
   testthat::expect_equal(
     dwc_occurrence_update %>%
       dplyr::filter(is.na(individualCount)) %>%
