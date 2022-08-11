@@ -45,7 +45,7 @@ jobs:
 
       - name: Fetch data
         run: |
-          source("src/fetch_data.R")
+          source("src/run_fetch_data.R")
         shell: Rscript {0}
 
       - name: Commit and push changes
