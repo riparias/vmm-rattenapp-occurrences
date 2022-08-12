@@ -224,12 +224,23 @@ life_mica_obs <-
     pattern = "MICA:VMM:EV:")
   )
 ```
-
 # Save data
 
 We save `occurrences` as an interim csv file:
 
 ```{r csv_file}
+message("Save interim data...")
 readr::write_csv(occurrences,
-                 file = here::here("data", "interim", "raw_occurrences.csv"))
+                 file = here::here("data", "interim", "raw_occurrences.csv"),
+                 na = "")
 ```
+
+as well the observations from LIFE MICA dataset to remove while mapping:
+
+```{r save_life_mica_data}
+readr::write_csv(life_mica_obs,
+                 file = here::here("data", "interim", "life_mica_obs.csv"),
+                 na = "")
+message("DONE")
+```
+
