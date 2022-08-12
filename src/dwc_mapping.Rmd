@@ -176,5 +176,5 @@ query <- glue::glue_sql("
 query
 raw_sc_names <- dplyr::as_tibble(DBI::dbGetQuery(con, query))
 message("New values in field 'Sporen Waarnemingen Naam' to be mapped:")
-raw_sc_names
+print(raw_sc_names)
 ```
