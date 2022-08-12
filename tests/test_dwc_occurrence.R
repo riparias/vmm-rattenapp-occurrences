@@ -18,8 +18,8 @@ library(readr)
 library(dplyr)
 
 # read proposed new version of the DwC mapping
-occs_path <- "./data/processed/occurrence.csv"
-dwc_occurrence_update <- readr::read_csv(occs_url, guess_max = 10000)
+occs_path <- here::here("data", "processed", "occurrence.csv")
+dwc_occurrence_update <- readr::read_csv(occs_path, guess_max = 10000)
 
 # tests
 testthat::test_that("Right columns in right order", {
