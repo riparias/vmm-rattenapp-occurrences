@@ -40,8 +40,6 @@ library(purrr)          # To work with lists
 library(stringr)        # To work with strings
 library(here)           # To find files
 library(readxl)         # To read Excel files
-library(DBI)            # To create and query databases
-library(RSQLite)        # To work with SQLite databases
 library(digest)         # To generate hashes
 ```
 
