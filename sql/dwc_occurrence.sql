@@ -26,7 +26,7 @@ SELECT
     WHEN o."Vangst Aantal" IS NULL AND o."Sporen Waarnemingen Naam" = '11 waterschildpadden' THEN 11
     WHEN o."Vangst Aantal" IS NULL AND o."Sporen Waarnemingen Naam" = '100  canadese ganzen' THEN 100
     WHEN o."Vangst Aantal" IS NULL AND o."Sporen Waarnemingen Naam" = 'Eendensterfte circa 25 st' THEN 25
-    WHEN o."Vangst Aantal" IS NOT NULL THEN o."Vangst Aantal"
+    WHEN o."Vangst Aantal" IS NOT NULL THEN CAST(o."Vangst Aantal" AS INT)
     ELSE NULL
   END                                   AS individualCount,
 CASE
@@ -89,7 +89,7 @@ WHEN o."Sporen Waarnemingen Naam" = 'Reuzenberenklauw' THEN 'Heracleum mantegazz
 WHEN o."Sporen Waarnemingen Naam" = 'Parelvederkruid' THEN 'Myriophyllum aquaticum'
 WHEN o."Sporen Waarnemingen Naam" = 'Waterteunisbloem' THEN 'Ludwigia grandiflora'
 WHEN o."Sporen Waarnemingen Naam" = 'Reuzenbalsemien' THEN 'Impatiens glandulifera'
-WHEN o."Sporen Waarnemingen Naam" = 'Grote waternavel' THEN 'Hydrocotyle ranunculoides L.fil.'
+WHEN o."Sporen Waarnemingen Naam" = 'Grote waternavel' THEN 'Hydrocotyle ranunculoides'
 WHEN o."Sporen Waarnemingen Naam" = 'Muskusrat' THEN 'Ondatra zibethicus'
 WHEN o."Sporen Waarnemingen Naam" = 'Muskusr. > 400gr' THEN 'Ondatra zibethicus'
 WHEN o."Sporen Waarnemingen Naam" = 'Muskusr. < 400gr' THEN 'Ondatra zibethicus'
@@ -137,6 +137,7 @@ WHEN o."Sporen Waarnemingen Naam" = 'Waterhoen' THEN 'Gallinula chloropus'
 WHEN o."Sporen Waarnemingen Naam" = 'Meerkoet' THEN 'Fulica atra'
 WHEN o."Sporen Waarnemingen Naam" = 'Doodaars' THEN 'Tachybaptus ruficollis'
 WHEN o."Sporen Waarnemingen Naam" = 'Eend' THEN 'Anatidae'
+WHEN o."Sporen Waarnemingen Naam" = 'Aalscholver' THEN 'Phalacrocorax carbo'
 ELSE NULL
 END                                   AS scientificName,
 CASE

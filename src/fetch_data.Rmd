@@ -1,0 +1,247 @@
+---
+title: "Fetch VMM rattenapp data"
+author:
+- Damiano Oldoni
+- Peter Desmet
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    df_print: paged
+    number_sections: yes
+    toc: yes
+    toc_depth: 3
+    toc_float: yes
+---
+
+# Setup 
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = TRUE, message = TRUE)
+```
+
+Install required libraries (if not yet installed):
+
+```{r install_pkgs}
+installed <- rownames(installed.packages())
+required <- c("dplyr", "readr", "purrr", "stringr", "here",
+              "readxl", "DBI", "RSQLite", "digest", "tidylog")
+if (!all(required %in% installed)) {
+  install.packages(required[!required %in% installed])
+}
+```
+
+Load libraries:
+
+```{r load_pkgs, message = FALSE}
+library(dplyr)          # To transform data
+library(tidylog)        # To provide feedback on dplyr functions
+library(readr)          # To read and write tabular text files
+library(purrr)          # To work with lists
+library(stringr)        # To work with strings
+library(here)           # To find files
+library(readxl)         # To read Excel files
+library(DBI)            # To create and query databases
+library(RSQLite)        # To work with SQLite databases
+library(digest)         # To generate hashes
+```
+
+# Fetch raw data
+
+The source data are provided manually and stored in `data/raw`. If this workflow can be fully automated, replace with querying from VMM endpoints.
+
+## Fetch observations
+
+### Fetch observations up to 2021
+
+Read both plant and animal observations up to the end of 2021 and merge them:
+
+```{r read_obs_old}
+message("Fetch observations up to the end of 2021...")
+# Plants up to 2021 included
+raw_plants_filename_old <- "Dieren en Planten Waarnemingen 2016-2021.xlsx"
+# Get all sheets
+raw_plants_sheets_old <- readxl::excel_sheets(
+  path = here::here("data", "raw", raw_plants_filename_old)
+)
+# Get all observations from all sheets in one data.frame
+observations_plants_old <- purrr::map_dfr(
+  raw_plants_sheets_old, ~readxl::read_xlsx(
+    path = here::here("data", "raw", raw_plants_filename_old),
+    sheet = .)) %>% 
+  mutate(across(everything(), as.character))
+
+# Animals up to 2021 included
+raw_animals_filename_old <- "Dieren en Planten Waarnemingen T14_59_52.xlsx"
+# Get all sheets
+raw_animals_sheets_old <- readxl::excel_sheets(
+  path = here::here("data", "raw", raw_animals_filename_old)
+)
+# Get all observations from all sheets in one data.frame
+observations_animals_old <- purrr::map_dfr(
+  raw_animals_sheets_old, ~readxl::read_xlsx(
+    path = here::here("data", "raw", raw_animals_filename_old),
+    sheet = .)) %>% 
+  mutate(across(everything(), as.character))
+
+# Merge plants and animals observations up to 2021
+observations_old <- dplyr::bind_rows(observations_plants_old,
+                                     observations_animals_old)
+message("DONE")
+```
+
+### Fetch observations from 2022
+
+```{r read_obs_from_2022}
+message("Fetch observations from begin 2022...")
+raw_obs_filename <- "Dieren en Planten Waarnemingen from 2022-01-01.xlsx"
+# Get all sheets
+raw_obs_sheets <- readxl::excel_sheets(
+  path = here::here("data", "raw", raw_obs_filename)
+)
+# Get all observations from all sheets in one data.frame
+observations <- purrr::map_dfr(
+  raw_obs_sheets, ~readxl::read_xlsx(
+    path = here::here("data", "raw", raw_obs_filename),
+    sheet = .)) %>% 
+  mutate(across(everything(), as.character))
+message("DONE")
+```
+
+Merge all observations:
+
+```{r merge_all_obs}
+message("Merge all observations...")
+observations <- dplyr::bind_rows(observations_old, observations)
+message("DONE")
+```
+
+## Fetch catches
+
+### Fetch catches of 2021
+
+Get catches from 2021: 
+
+```{r fetch_catches_old}
+message("Fetch catches up to the end of 2021...")
+# catches 2021
+catches_2021_filename <- "Vangsten T13_05_14.xlsx"
+# Get all sheets
+catches_2021_sheets <- readxl::excel_sheets(
+  path = here::here("data", "raw", catches_2021_filename)
+)
+# Get all catches from all sheets in one data.frame
+catches_2021 <- purrr::map_dfr(
+  catches_2021_sheets, ~readxl::read_xlsx(
+    path = here::here("data", "raw", catches_2021_filename),
+    sheet = .)) %>% 
+  mutate(across(everything(), as.character))
+message("DONE")
+```
+
+### Fetch catches from 2022
+
+Catches from Jan 2022:
+
+```{r catches_from_2022}
+message("Fetch catches from begin 2022...")
+# catches from Jan 2022
+catches_filename <- "Vangsten from 2022-01-01.xlsx"
+# Get all sheets
+catches_sheets <- readxl::excel_sheets(
+  path = here::here("data", "raw", catches_filename)
+)
+# Get all catches from all sheets in one data.frame
+catches <- purrr::map_dfr(
+  catches_sheets, ~readxl::read_xlsx(
+    path = here::here("data", "raw", catches_filename),
+    sheet = .)) %>% 
+  mutate(across(everything(), as.character))
+message("DONE")
+```
+
+
+```{r merge_catches}
+message("Merge all catches...")
+catches <- bind_rows(catches_2021, catches)
+message("DONE")
+message("Relocate columns based on cols observations...")
+catches <- 
+  catches %>%
+  relocate(
+    one_of(names(observations)[names(observations) %in% names(catches)])
+)
+message("DONE")
+```
+
+We remove from `observations` the observations related to catches (same registration ID and species name) as they are duplicates:
+
+```{r remove_obs_catches}
+message("Remove observations in catches...")
+# same registrationID-species combination
+observations <- 
+  observations %>%
+  anti_join(catches %>% dplyr::select(`Registratie ID`,
+                                      `Sporen Waarnemingen Naam`),
+            by = c("Registratie ID", "Sporen Waarnemingen Naam"))
+message("DONE")
+```
+
+## Merge observations and catches
+
+We can now proceed by merging `catches` and  `observations`:
+
+```{r merge_catches_obs}
+message("Merge observations and catches...")
+occurrences <- dplyr::bind_rows(observations, catches)
+message("DONE")
+```
+
+## Generate hashes for species names
+
+We generate a hash based on the species name as saved in column `Sporen Waarnemingen Naam`. This is needed to create a unique `occurrenceID` of the form `eventID:hash` where `eventID` is the unique identifier of the event as defined in column `Registratie ID`. As long as the species name doesn't change, the hash and so the `occurrenceID` will be stable:
+
+```{r generate_hashes}
+vdigest <- Vectorize(digest)
+# Generate hashes
+occurrences <-
+  occurrences %>% 
+  mutate(species_name_hash = vdigest(.data$`Sporen Waarnemingen Naam`, algo = "md5"))
+```
+
+### Read data already published on GBIF
+
+Read [LIFE MICA dataset](https://www.gbif.org/dataset/3634aee3-41d5-4aa2-8cb5-875859f62a3a) as downloaded from GBIF (https://doi.org/10.15468/dl.ansxse). These data should not be published twice and therefore should be filtered out.
+
+```{r life_mica_data}
+life_mica_obs <-
+  readr::read_tsv(
+    here::here("data", "external", "0218803-210914110416597_occurrence.txt"),
+    col_types = cols(.default = "c")) %>%
+  
+  # Retrieve original event IDs
+  mutate(registration_id = stringr::str_remove_all(
+    string = .data$eventID, 
+    pattern = "MICA:VMM:EV:")
+  )
+```
+
+## Create database
+
+Create a SQLite database with the source data, so it can be queried with SQL in the next steps:
+
+```{r create_db}
+message("Create SQLite database...")
+sqlite_path <- here::here("data", "interim", "occurrences.sqlite")
+con <- DBI::dbConnect(RSQLite::SQLite(), dbname = sqlite_path)
+# drop table occurrences if exists
+DBI::dbExecute(con, "DROP TABLE IF EXISTS occurrences")
+# import occurrences
+DBI::dbWriteTable(con, "occurrences", occurrences)
+# drop table life_mica_obs if exists
+DBI::dbExecute(con, "DROP TABLE IF EXISTS life_mica_obs")
+# import occurrences to filter out
+DBI::dbWriteTable(con, "life_mica_obs", life_mica_obs)
+# Close connection
+DBI::dbDisconnect(con)
+message("DONE")
+```
