@@ -46,14 +46,26 @@ library(RSQLite)        # To work with SQLite databases
 library(digest)         # To generate hashes
 ```
 
-## Connect to database
+## Read observations
 
-Connect to the SQLite database with the occurrence data created in `fetch_data.Rmd`:
+Read all observations as fetched and merged in `./src/fetch_data.Rmd`:
+
+```{r read_obs}
+readr::read_csv(here::here("data", "interim", "observations.csv"),
+                col_types = cols(.default = col_character()))
+```
+
+## Create database
+
+Create a SQLite database with the source data, so it can be queried with SQL in the next steps:
 
 ```{r create_db}
-message("Connect to SQLite database...")
-sqlite_path <- here::here("data", "interim", "occurrences.sqlite")
-con <- DBI::dbConnect(RSQLite::SQLite(), dbname = sqlite_path)
+message("Create in memory SQLite database...")
+con <- DBI::dbConnect(RSQLite::SQLite(), ":memory:")
+# import occurrences
+DBI::dbWriteTable(con, "occurrences", occurrences)
+# import occurrences to filter out
+DBI::dbWriteTable(con, "life_mica_obs", life_mica_obs)
 message("DONE")
 ```
 
