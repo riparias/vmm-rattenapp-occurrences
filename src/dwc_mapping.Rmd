@@ -46,14 +46,37 @@ library(RSQLite)        # To work with SQLite databases
 library(digest)         # To generate hashes
 ```
 
-## Connect to database
+## Read observations
 
-Connect to the SQLite database with the occurrence data created in `fetch_data.Rmd`:
+Read all observations as fetched and merged in `./src/fetch_data.Rmd`:
+
+```{r read_obs}
+message("Read interim data...")
+occurrences <- readr::read_csv(
+  file = here::here("data", "interim", "raw_occurrences.csv"),
+  col_types = cols(.default = col_character()))
+```
+
+as well the ones to be removed as already published on GBIF by LIFE MICA:
+
+```{r read_life_mica_data}
+life_mica_obs <- readr::read_csv(
+  file = here::here("data", "interim", "life_mica_obs.csv"),
+  col_types = cols(.default = col_character()))
+message("DONE")
+```
+
+## Create database
+
+Create a SQLite database with the source data, so it can be queried with SQL in the next steps:
 
 ```{r create_db}
-message("Connect to SQLite database...")
-sqlite_path <- here::here("data", "interim", "occurrences.sqlite")
-con <- DBI::dbConnect(RSQLite::SQLite(), dbname = sqlite_path)
+message("Create in memory SQLite database...")
+con <- DBI::dbConnect(RSQLite::SQLite(), ":memory:")
+# import occurrences
+DBI::dbWriteTable(con, "occurrences", occurrences)
+# import occurrences to filter out
+DBI::dbWriteTable(con, "life_mica_obs", life_mica_obs)
 message("DONE")
 ```
 

@@ -24,7 +24,7 @@ Install required libraries (if not yet installed):
 ```{r install_pkgs}
 installed <- rownames(installed.packages())
 required <- c("dplyr", "readr", "purrr", "stringr", "here",
-              "readxl", "DBI", "RSQLite", "digest", "tidylog")
+              "readxl", "digest", "tidylog")
 if (!all(required %in% installed)) {
   install.packages(required[!required %in% installed])
 }
@@ -224,24 +224,23 @@ life_mica_obs <-
     pattern = "MICA:VMM:EV:")
   )
 ```
+# Save data
 
-## Create database
+We save `occurrences` as an interim csv file:
 
-Create a SQLite database with the source data, so it can be queried with SQL in the next steps:
+```{r csv_file}
+message("Save interim data...")
+readr::write_csv(occurrences,
+                 file = here::here("data", "interim", "raw_occurrences.csv"),
+                 na = "")
+```
 
-```{r create_db}
-message("Create SQLite database...")
-sqlite_path <- here::here("data", "interim", "occurrences.sqlite")
-con <- DBI::dbConnect(RSQLite::SQLite(), dbname = sqlite_path)
-# drop table occurrences if exists
-DBI::dbExecute(con, "DROP TABLE IF EXISTS occurrences")
-# import occurrences
-DBI::dbWriteTable(con, "occurrences", occurrences)
-# drop table life_mica_obs if exists
-DBI::dbExecute(con, "DROP TABLE IF EXISTS life_mica_obs")
-# import occurrences to filter out
-DBI::dbWriteTable(con, "life_mica_obs", life_mica_obs)
-# Close connection
-DBI::dbDisconnect(con)
+as well the observations from LIFE MICA dataset to remove while mapping:
+
+```{r save_life_mica_data}
+readr::write_csv(life_mica_obs,
+                 file = here::here("data", "interim", "life_mica_obs.csv"),
+                 na = "")
 message("DONE")
 ```
+
