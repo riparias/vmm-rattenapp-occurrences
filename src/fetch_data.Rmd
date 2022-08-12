@@ -170,7 +170,6 @@ catches <-
   relocate(
     one_of(names(observations)[names(observations) %in% names(catches)])
 )
-remove(catches_2021)
 message("DONE")
 ```
 
@@ -194,8 +193,6 @@ We can now proceed by merging `catches` and  `observations`:
 ```{r merge_catches_obs}
 message("Merge observations and catches...")
 occurrences <- dplyr::bind_rows(observations, catches)
-remove(observations)
-remove(catches)
 message("DONE")
 ```
 
