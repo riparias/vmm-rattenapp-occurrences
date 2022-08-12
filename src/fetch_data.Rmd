@@ -93,7 +93,7 @@ message("DONE")
 
 ```{r read_obs_from_2022}
 message("Fetch observations from begin 2022...")
-raw_obs_filename <- "Dieren en Planten Waarnemingen T10_38_12.xlsx"
+raw_obs_filename <- "Dieren en Planten Waarnemingen from 2022-01-01.xlsx"
 # Get all sheets
 raw_obs_sheets <- readxl::excel_sheets(
   path = here::here("data", "raw", raw_obs_filename)
@@ -145,7 +145,7 @@ Catches from Jan 2022:
 ```{r catches_from_2022}
 message("Fetch catches from begin 2022...")
 # catches from Jan 2022
-catches_filename <- "Vangsten T10_37_13.xlsx"
+catches_filename <- "Vangsten from 2022-01-01.xlsx"
 # Get all sheets
 catches_sheets <- readxl::excel_sheets(
   path = here::here("data", "raw", catches_filename)
