@@ -171,6 +171,7 @@ WHERE
   o."Sporen Waarnemingen Naam" != 'Geen sporen - melding br' AND
   o."Sporen Waarnemingen Naam" != '1 zak vuilnis' AND
   o."Sporen Waarnemingen Naam" != 'Vuilzakken' AND
+  o."Sporen Waarnemingen Naam" != 'Grote afvalstukken' AND
   o."Sporen Waarnemingen Naam" != '2 nederlandse coniberen' AND
   o."Sporen Waarnemingen Naam" != '2 stoplossen op het droge' AND
   o."Sporen Waarnemingen Naam" != 'Wordt' AND
