@@ -2,6 +2,12 @@ on:
   schedule:
     - cron: "*/30 * * * *"
 
+  push:
+    branches:
+    - main
+    paths:
+    - data/raw/**
+
 
 name: fetch-data
 
