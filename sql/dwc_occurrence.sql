@@ -117,6 +117,7 @@ WHEN o."Sporen Waarnemingen Naam" = 'waterschildpad' THEN 'Emydidae'
 WHEN o."Sporen Waarnemingen Naam" = 'Castor fiber' THEN 'Castor fiber' -- Castor fiber unchanged
 WHEN o."Sporen Waarnemingen Naam" = 'Wolhandkrab' THEN 'Eriocheir sinensis'
 WHEN o."Sporen Waarnemingen Naam" = 'Nijlgans' THEN 'Alopochen aegyptiacus'
+WHEN o."Sporen Waarnemingen Naam" = 'Nijlganzen THEN 'Alopochen aegyptiacus'
 WHEN o."Sporen Waarnemingen Naam" = 'Nijlganzen nest' THEN 'Alopochen aegyptiacus'
 WHEN o."Sporen Waarnemingen Naam" = 'Pootafdrukken wasbeer' THEN 'Procyon lotor'
 WHEN o."Sporen Waarnemingen Naam" = 'Geelbuikschildpad' THEN 'Trachemys scripta scripta'
@@ -139,8 +140,7 @@ WHEN o."Sporen Waarnemingen Naam" = 'Doodaars' THEN 'Tachybaptus ruficollis'
 WHEN o."Sporen Waarnemingen Naam" = 'Eend' THEN 'Anatidae'
 WHEN o."Sporen Waarnemingen Naam" = 'Aalscholver' THEN 'Phalacrocorax carbo'
 WHEN o."Sporen Waarnemingen Naam" = 'Hermelijn' THEN 'Mustela erminea'
-WHEN o."Sporen Waarnemingen Naam" = 'Mustelidae' THEN 'Marterachtige'
-WHEN o."Sporen Waarnemingen Naam" = 'Alopochen aegyptiaca' THEN 'Nijlganzen'
+WHEN o."Sporen Waarnemingen Naam" = 'Marterachtige' THEN 'Mustelidae'
 ELSE NULL
 END                                   AS scientificName,
 CASE
