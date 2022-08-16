@@ -156,7 +156,7 @@ testthat::test_that("scientificName is never NA and one of the list", {
     "Branta canadensis",
     "Mustela nivalis",
     "Mustela erminea",
-    "Mustelidae',
+    "Mustelidae",
     "Trachemys scripta troosti",
     "Lutra",
     "Anguis fragilis",
