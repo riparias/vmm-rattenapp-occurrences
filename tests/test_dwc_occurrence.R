@@ -155,6 +155,8 @@ testthat::test_that("scientificName is never NA and one of the list", {
     "Mustela putorius",
     "Branta canadensis",
     "Mustela nivalis",
+    "Mustela erminea",
+    "Mustelidae",
     "Trachemys scripta troosti",
     "Lutra",
     "Anguis fragilis",
@@ -165,7 +167,8 @@ testthat::test_that("scientificName is never NA and one of the list", {
     "Gallinula chloropus",
     "Fulica atra",
     "Tachybaptus ruficollis",
-    "Phalacrocorax carbo"
+    "Phalacrocorax carbo",
+    "Decapoda"
   )
   testthat::expect_true(all(!is.na(dwc_occurrence_update$scientificName)))
   testthat::expect_true(all(dwc_occurrence_update$scientificName %in% species))
