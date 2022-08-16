@@ -141,6 +141,7 @@ WHEN o."Sporen Waarnemingen Naam" = 'Eend' THEN 'Anatidae'
 WHEN o."Sporen Waarnemingen Naam" = 'Aalscholver' THEN 'Phalacrocorax carbo'
 WHEN o."Sporen Waarnemingen Naam" = 'Hermelijn' THEN 'Mustela erminea'
 WHEN o."Sporen Waarnemingen Naam" = 'Marterachtige' THEN 'Mustelidae'
+WHEN o."Sporen Waarnemingen Naam" = 'Rivierkreeft' THEN 'Decapoda'
 ELSE NULL
 END                                   AS scientificName,
 CASE
