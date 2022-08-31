@@ -1,6 +1,6 @@
 on:
   schedule:
-    - cron: "0 */12 * * *"
+    - cron: "0 3 * * *"
 
   push:
     branches:
@@ -34,21 +34,25 @@ jobs:
           fetch-depth: 0
           token: ${{ secrets.WORKFLOWS }}
 
-      - name: setup R
+      - name: Setup R
         uses: r-lib/actions/setup-r@master
         with:
           r-version: ${{ matrix.config.r }}
           http-user-agent: ${{ matrix.config.http-user-agent }}
 
-      - name: setup pandoc
+      - name: Setup pandoc
         uses: r-lib/actions/setup-pandoc@master
 
-      - name: install linux libraries
+      - name: Install linux libraries
         run: |
           sudo apt install libsodium-dev
           sudo apt-get install libcurl4-openssl-dev
           sudo apt-get install libgdal-dev libproj-dev
           sudo apt install libudunits2-dev
+
+      - name: Install R packages
+        run: |
+          source("src/install_packages.R")
 
       - name: Fetch data
         run: |
@@ -64,7 +68,7 @@ jobs:
           target_branch: automatic-update
           add_timestamp: true
 
-      - name: get branch name
+      - name: Get branch name
         run: |
           git branch --show-current
 
