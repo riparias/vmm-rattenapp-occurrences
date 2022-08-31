@@ -45,6 +45,10 @@ jobs:
           sudo apt-get install libgdal-dev libproj-dev
           sudo apt install libudunits2-dev
 
+      - name: Install R packages
+        run: |
+          source("src/install_packages.R")
+
       - name: Mapping to DwC
         run: |
           source("src/run_dwc_mapping.R")
