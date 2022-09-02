@@ -53,6 +53,7 @@ jobs:
       - name: Install R packages
         run: |
           source("src/install_packages.R")
+        shell: Rscript {0}
 
       - name: Fetch data
         run: |
