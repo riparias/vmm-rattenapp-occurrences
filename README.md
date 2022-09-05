@@ -27,24 +27,35 @@ The repository structure is based on [Cookiecutter Data Science](http://drivenda
 ├── vmm-rattenapp-occurrences.Rproj : RStudio project file
 ├── .gitignore             : Files and directories to be ignored by git
 │
+├── .github                
+│   ├── PULL_REQUEST_TEMPLATE.md : Pull request template
+│   └── workflows
+│   │   ├── fetch-data.yaml    : GitHub action to fetch raw data
+│   │   └── mapping_and_testing.yaml : GitHub action to map data to DwC and perform some tests on the Dwc output
+|
 ├── src
-│   └── dwc_mapping.Rmd    : Darwin Core mapping script
+│   ├── fetch_data.Rmd     : Fetchin data script
+│   ├── dwc_mapping.Rmd    : Darwin Core mapping script
+│   ├── run_fetch_data.R   : R script to run code in fetch_data.Rmd in an automatic way within a GitHub action
+│   ├── run_dwc_mapping.R  : R script to run code in dcw_mapping.Rmd in an automatic way within a GitHub action
+│   └── install_packages.R : R script to install all needed packages
 |
 ├── sql                    : Darwin Core transformations
 │   └── dwc_occurrence.sql
 │   
 └── data
-    ├── raw                : Source data, input for mapping script
-    ├── external           : External data used during the mapping
-    └── processed          : Darwin Core output of mapping script GENERATED
+│   ├── raw                : Source data to fetch
+│   ├── external           : External data used during the mapping
+│   ├── interim            : All fetched data, input for mapping script
+│   └── processed          : Darwin Core output of mapping script GENERATED
 ```
 
 ## Installation
 
 1. Clone this repository to your computer
 2. Open the RStudio project file
-3. Open the `dwc_mapping.Rmd` [R Markdown file](https://rmarkdown.rstudio.com/) in RStudio
-4. Install any required packages
+3. Install any required packages by running `install_packages.R` (in folder `/src`)
+4. Open the `dwc_mapping.Rmd` [R Markdown file](https://rmarkdown.rstudio.com/) in RStudio
 5. Click `Run > Run All` to generate the processed data
 
 ## License
