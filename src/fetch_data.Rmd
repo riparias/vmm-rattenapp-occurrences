@@ -80,17 +80,13 @@ message("DONE")
 
 ```{r read_obs_from_2022}
 message("Fetch observations from begin 2022...")
-raw_obs_filename <- "Dieren en Planten Waarnemingen from 2022-01-01.xlsx"
-# Get all sheets
-raw_obs_sheets <- readxl::excel_sheets(
-  path = here::here("data", "raw", raw_obs_filename)
+raw_obs_filename <- "Dieren en Planten Waarnemingen from 2022-01-01.csv"
+observations <- readr::read_tsv(
+  here::here("data", "raw", raw_obs_filename),
+  na = "",
+  col_types = readr::cols(.default = readr::col_character()),
+  locale = readr::locale(encoding = "UTF-16")
 )
-# Get all observations from all sheets in one data.frame
-observations <- purrr::map_dfr(
-  raw_obs_sheets, ~readxl::read_xlsx(
-    path = here::here("data", "raw", raw_obs_filename),
-    sheet = .)) %>% 
-  mutate(across(everything(), as.character))
 message("DONE")
 ```
 
@@ -175,7 +171,7 @@ message("DONE")
 
 ## Merge observations and catches
 
-We can now proceed by merging `catches` and  `observations`:
+We can now proceed by merging `catches` and `observations`:
 
 ```{r merge_catches_obs}
 message("Merge observations and catches...")
