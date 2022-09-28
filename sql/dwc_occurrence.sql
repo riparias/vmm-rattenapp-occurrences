@@ -29,12 +29,13 @@ SELECT
     WHEN o."Vangst Aantal" IS NOT NULL THEN CAST(o."Vangst Aantal" AS INT)
     ELSE NULL
   END                                   AS individualCount,
-CASE
-WHEN o."Sporen Waarnemingen Naam" = 'Eendensterfte circa 25 st' THEN 'found dead'
-WHEN o."Sporen Waarnemingen Naam" = 'Pootafdrukken wasbeer' THEN 'found as tracks'
-WHEN o."Sporen Waarnemingen Naam" = 'Nijlganzen nest' THEN 'found as nest'
-ELSE NULL
-END                                   AS occurrenceRemarks,
+  CASE
+    WHEN o."Sporen Waarnemingen Naam" = 'Eendensterfte circa 25 st' THEN 'found dead'
+    WHEN o."Sporen Waarnemingen Naam" = 'Dode bever' THEN 'found dead'
+    WHEN o."Sporen Waarnemingen Naam" = 'Pootafdrukken wasbeer' THEN 'found as tracks'
+    WHEN o."Sporen Waarnemingen Naam" = 'Nijlganzen nest' THEN 'found as nest'
+    ELSE NULL
+  END                                   AS occurrenceRemarks,
 -- EVENT
 o."Registratie ID"                    AS eventID,
 date(o.Dag)                           AS eventDate,
@@ -97,6 +98,7 @@ WHEN o."Sporen Waarnemingen Naam" = 'Beverrat' THEN 'Myocastor coypus'
 WHEN o."Sporen Waarnemingen Naam" = 'Bruine rat' THEN 'Rattus norvegicus'
 WHEN o."Sporen Waarnemingen Naam" = 'Bruine ratten. geen spore' THEN 'Rattus norvegicus'
 WHEN o."Sporen Waarnemingen Naam" = 'Bever' THEN 'Castor fiber'
+WHEN o."Sporen Waarnemingen Naam" = 'Dode bever' THEN 'Castor fiber'
 WHEN o."Sporen Waarnemingen Naam" = 'Woelrat' THEN 'Arvicola terrestris'
 WHEN o."Sporen Waarnemingen Naam" = 'Woelratten' THEN 'Arvicola terrestris'
 WHEN o."Sporen Waarnemingen Naam" = 'W9elrat' THEN 'Arvicola terrestris'
