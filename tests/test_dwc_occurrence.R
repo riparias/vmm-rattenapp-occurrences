@@ -111,6 +111,25 @@ testthat::test_that("locationID is always filled in", {
   testthat::expect_true(all(!is.na(dwc_occurrence_update$locationID)))
 })
 
+testthat::test_that("decimalLatitude is always filled in", {
+  testthat::expect_true(all(!is.na(dwc_occurrence_update$decimalLatitude)))
+})
+
+testthat::test_that("decimalLatitude is within Flemish boundaries", {
+  testthat::expect_true(all(dwc_occurrence_update$decimalLatitude < 51.65))
+  testthat::expect_true(all(dwc_occurrence_update$decimalLatitude > 50.63))
+})
+
+testthat::test_that("decimalLongitude is always filled in", {
+  testthat::expect_true(all(!is.na(dwc_occurrence_update$decimalLongitude)))
+})
+
+testthat::test_that("decimalLongitude is within Flemish boundaries", {
+  testthat::expect_true(all(dwc_occurrence_update$decimalLongitude < 5.95))
+  testthat::expect_true(all(dwc_occurrence_update$decimalLongitude > 2.50))
+})
+
+
 testthat::test_that("scientificName is never NA and one of the list", {
   species <- c(
     "Hydrocotyle ranunculoides",
