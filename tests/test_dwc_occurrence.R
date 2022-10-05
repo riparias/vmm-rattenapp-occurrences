@@ -126,7 +126,7 @@ testthat::test_that("decimalLongitude is always filled in", {
 
 testthat::test_that("decimalLongitude is within Flemish boundaries", {
   testthat::expect_true(all(dwc_occurrence_update$decimalLongitude < 5.95))
-  testthat::expect_true(all(dwc_occurrence_update$decimalLongitude > 2.50))
+  testthat::expect_true(all(dwc_occurrence_update$decimalLongitude > 2.450))
 })
 
 
