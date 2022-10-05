@@ -87,6 +87,10 @@ observations <- readr::read_tsv(
   col_types = readr::cols(.default = readr::col_character()),
   locale = readr::locale(encoding = "UTF-16")
 )
+# replace , to . in latitude and longitude columns
+observations <- 
+  observations %>%
+  dplyr::mutate(dplyr::across(dplyr::contains("GPS"), stringr::str_replace, ",", "."))
 message("DONE")
 ```
 
