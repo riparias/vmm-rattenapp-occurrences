@@ -82,15 +82,6 @@ dwc_occurrence <- DBI::dbGetQuery(con, dwc_occurrence_sql)
 message("DONE")
 ```
 
-Patch to remove data with corrupted coordinates derived from corrupted information in raw file. See https://github.com/riparias/vmm-rattenapp-occurrences/issues/78:
-
-```{r patch}
-events_corrupted_coords <- c("575118", "579018")
-dwc_occurrence <-
-  dwc_occurrence %>%
-  filter(!.data$eventID %in% events_corrupted_coords)
-```
-
 # Save data to CSV
 
 ```{r save_csv}
