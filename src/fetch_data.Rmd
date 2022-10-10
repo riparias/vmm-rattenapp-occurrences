@@ -132,17 +132,18 @@ Catches from Jan 2022:
 ```{r catches_from_2022}
 message("Fetch catches from begin 2022...")
 # catches from Jan 2022
-catches_filename <- "Vangsten from 2022-01-01.xlsx"
+catches_filename <- "Vangsten from 2022-01-01.csv"
 # Get all sheets
-catches_sheets <- readxl::excel_sheets(
-  path = here::here("data", "raw", catches_filename)
+catches <- readr::read_tsv(
+  here::here("data", "raw", catches_filename),
+  na = "",
+  col_types = readr::cols(.default = readr::col_character()),
+  locale = readr::locale(encoding = "UTF-16")
 )
-# Get all catches from all sheets in one data.frame
-catches <- purrr::map_dfr(
-  catches_sheets, ~readxl::read_xlsx(
-    path = here::here("data", "raw", catches_filename),
-    sheet = .)) %>% 
-  mutate(across(everything(), as.character))
+# replace , to . in latitude and longitude columns
+catches <- 
+  catches %>%
+  dplyr::mutate(dplyr::across(dplyr::contains("GPS"), stringr::str_replace, ",", "."))
 message("DONE")
 ```
 
