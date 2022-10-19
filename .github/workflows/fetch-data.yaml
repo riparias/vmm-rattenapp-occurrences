@@ -41,7 +41,7 @@ jobs:
           http-user-agent: ${{ matrix.config.http-user-agent }}
 
       - name: Setup pandoc
-        uses: r-lib/actions/setup-pandoc@master
+        uses: r-lib/actions/setup-pandoc@v2
 
       - name: Install linux libraries
         run: |
