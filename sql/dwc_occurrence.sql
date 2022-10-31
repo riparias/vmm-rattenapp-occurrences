@@ -189,4 +189,5 @@ WHERE
   o."Sporen Waarnemingen Naam" != '2 dode geiten' AND
   o."Sporen Waarnemingen Naam" != 'Andere'
 ORDER BY
-    o."Registratie ID" || ':' || o."species_name_hash" ASC -- occurrenceID
+    o."Registratie ID" ASC, -- eventID
+    o."species_name_hash" ASC -- species hash (part of occurrenceID)
