@@ -188,3 +188,5 @@ WHERE
   o."Sporen Waarnemingen Naam" != 'Melding bruine rat - geen' AND
   o."Sporen Waarnemingen Naam" != '2 dode geiten' AND
   o."Sporen Waarnemingen Naam" != 'Andere'
+ORDER BY
+    o."Registratie ID" || ':' || o."species_name_hash" ASC -- occurrenceID
