@@ -11,7 +11,7 @@ SELECT
   'http://www.inbo.be/en/norms-for-data-use' AS accessRights,
   'https://doi.org/10.15468/wquzva'     AS datasetID,
   'VMM'                                 AS institutionCode,
-  'Rat control occurrences collected by VMM in Flanders, Belgium' AS datasetName,
+  'VMM - Rat control occurrences in Flanders, Belgium' AS datasetName,
   'HumanObservation'                    AS basisOfRecord,
   CASE
     WHEN o."Vangst Aantal" IS NULL AND o."Registratie Verwijderd Omschrijving" = 'Verwijderd' THEN 'eradicated'
