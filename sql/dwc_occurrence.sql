@@ -117,6 +117,7 @@ SELECT
     WHEN o."Sporen Waarnemingen Naam" = 'Galsbandparkiet' THEN 'Psittacula krameri'
     WHEN o."Sporen Waarnemingen Naam" = 'Galsbandparkieten' THEN 'Psittacula krameri'
     WHEN o."Sporen Waarnemingen Naam" = 'Galsbandparkieten exoot' THEN 'Psittacula krameri'
+    WHEN o."Sporen Waarnemingen Naam" = 'Halsbandparkiet' THEN 'Psittacula krameri'
     WHEN o."Sporen Waarnemingen Naam" = '11 waterschildpadden' THEN 'Emydidae'
     WHEN o."Sporen Waarnemingen Naam" = 'waterschildpad' THEN 'Emydidae'
     WHEN o."Sporen Waarnemingen Naam" = 'Castor fiber' THEN 'Castor fiber' -- Castor fiber unchanged
