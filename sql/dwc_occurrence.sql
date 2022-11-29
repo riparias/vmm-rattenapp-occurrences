@@ -34,6 +34,7 @@ SELECT
     WHEN o."Sporen Waarnemingen Naam" = 'Dode bever' THEN 'found dead'
     WHEN o."Sporen Waarnemingen Naam" = 'Pootafdrukken wasbeer' THEN 'found as tracks'
     WHEN o."Sporen Waarnemingen Naam" = 'Nijlganzen nest' THEN 'found as nest'
+    WHEN o."Sporen Waarnemingen Naam" = 'Nest aziatische hoornaar' THEN 'found as nest'
     ELSE NULL
   END                                   AS occurrenceRemarks,
 -- EVENT
@@ -149,6 +150,7 @@ SELECT
     WHEN o."Sporen Waarnemingen Naam" = 'Marterachtige' THEN 'Mustelidae'
     WHEN o."Sporen Waarnemingen Naam" = 'Rivierkreeft' THEN 'Decapoda'
     WHEN o."Sporen Waarnemingen Naam" = 'Boommarter' THEN 'Martes martes'
+    WHEN o."Sporen Waarnemingen Naam" = 'Nest aziatische hoornaar' THEN 'Vespa velutina'
     ELSE NULL
   END                                   AS scientificName,
   CASE
