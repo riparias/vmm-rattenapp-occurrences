@@ -151,6 +151,7 @@ SELECT
     WHEN o."Sporen Waarnemingen Naam" = 'Rivierkreeft' THEN 'Decapoda'
     WHEN o."Sporen Waarnemingen Naam" = 'Boommarter' THEN 'Martes martes'
     WHEN o."Sporen Waarnemingen Naam" = 'Nest aziatische hoornaar' THEN 'Vespa velutina'
+    WHEN o."Sporen Waarnemingen Naam" = 'Aziatische hoornaar' THEN 'Vespa velutina'
     ELSE NULL
   END                                   AS scientificName,
   CASE
@@ -190,7 +191,8 @@ WHERE
   o."Sporen Waarnemingen Naam" != 'Wordt' AND
   o."Sporen Waarnemingen Naam" != 'Melding bruine rat - geen' AND
   o."Sporen Waarnemingen Naam" != '2 dode geiten' AND
-  o."Sporen Waarnemingen Naam" != 'Andere'
+  o."Sporen Waarnemingen Naam" != 'Andere' AND
+  o."Sporen Waarnemingen Naam" != 'Nest'
 ORDER BY
     o."Registratie ID" ASC, -- eventID
     o."species_name_hash" ASC -- species hash (part of occurrenceID)
