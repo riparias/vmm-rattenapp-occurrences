@@ -196,7 +196,7 @@ occurrences <-
   mutate(species_name_hash = vdigest(.data$`Sporen Waarnemingen Naam`, algo = "md5"))
 ```
 
-### Read data already published on GBIF
+## Read data already published on GBIF
 
 Read [LIFE MICA dataset](https://www.gbif.org/dataset/3634aee3-41d5-4aa2-8cb5-875859f62a3a) as downloaded from GBIF (https://doi.org/10.15468/dl.ansxse). These data should not be published twice and therefore should be filtered out.
 
@@ -212,6 +212,7 @@ life_mica_obs <-
     pattern = "MICA:VMM:EV:")
   )
 ```
+
 # Save data
 
 We save `occurrences` as an interim csv file:
