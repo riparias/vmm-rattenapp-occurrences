@@ -94,6 +94,8 @@ SELECT
     WHEN o."Sporen Waarnemingen Naam" = 'Waterteunisbloem' THEN 'Ludwigia grandiflora'
     WHEN o."Sporen Waarnemingen Naam" = 'Reuzenbalsemien' THEN 'Impatiens glandulifera'
     WHEN o."Sporen Waarnemingen Naam" = 'Grote waternavel' THEN 'Hydrocotyle ranunculoides'
+    WHEN o."Sporen Waarnemingen Naam" = 'Waterwaaier' THEN 'Cabomba caroliniana'
+    WHEN o."Sporen Waarnemingen Naam" = 'Waterpest' THEN 'Elodea'
     -- Animalia
     WHEN o."Sporen Waarnemingen Naam" = 'Muskusrat' THEN 'Ondatra zibethicus'
     WHEN o."Sporen Waarnemingen Naam" = 'Muskusr. > 400gr' THEN 'Ondatra zibethicus'
@@ -161,7 +163,9 @@ SELECT
       o."Sporen Waarnemingen Naam" = 'Parelvederkruid' OR
       o."Sporen Waarnemingen Naam" = 'Waterteunisbloem' OR
       o."Sporen Waarnemingen Naam" = 'Reuzenbalsemien' OR
-      o."Sporen Waarnemingen Naam" = 'Grote waternavel' THEN 'Plantae'
+      o."Sporen Waarnemingen Naam" = 'Grote waternavel' OR
+      o."Sporen Waarnemingen Naam" = 'Waterpest' OR
+      o."Sporen Waarnemingen Naam" = 'Waterwaaier' THEN 'Plantae'
     ELSE 'Animalia'
   END                                   AS kingdom
 FROM occurrences AS o
