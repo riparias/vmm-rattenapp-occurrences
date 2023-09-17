@@ -98,6 +98,7 @@ SELECT
     WHEN o."Sporen Waarnemingen Naam" = 'Waterpest' THEN 'Elodea'
     WHEN o."Sporen Waarnemingen Naam" = 'Kaapse waterlelie' THEN 'Aponogeton distachyos'
     WHEN o."Sporen Waarnemingen Naam" = 'Afghaanse duizendknoop' THEN 'Koenigia polystachya'
+    WHEN o."Sporen Waarnemingen Naam" = 'Watercrassula' THEN 'Crassula helmsii'
     -- Animalia
     WHEN o."Sporen Waarnemingen Naam" = 'Muskusrat' THEN 'Ondatra zibethicus'
     WHEN o."Sporen Waarnemingen Naam" = 'Muskusr. > 400gr' THEN 'Ondatra zibethicus'
@@ -169,7 +170,8 @@ SELECT
       o."Sporen Waarnemingen Naam" = 'Waterpest' OR
       o."Sporen Waarnemingen Naam" = 'Waterwaaier' OR
       o."Sporen Waarnemingen Naam" = 'Kaapse waterlelie' OR
-      o."Sporen Waarnemingen Naam" = 'Koenigia polystachya' THEN 'Plantae'
+      o."Sporen Waarnemingen Naam" = 'Afghaanse duizendknoop' OR
+      o."Sporen Waarnemingen Naam" = 'Watercrassula' THEN 'Plantae'
     ELSE 'Animalia'
   END                                   AS kingdom
 FROM occurrences AS o
