@@ -205,7 +205,9 @@ WHERE
   o."Sporen Waarnemingen Naam" != '2 dode geiten' AND
   o."Sporen Waarnemingen Naam" != 'Andere' AND
   o."Sporen Waarnemingen Naam" != 'Nest' AND
-  o."Sporen Waarnemingen Naam" != 'Muizen'
+  o."Sporen Waarnemingen Naam" != 'Muizen' AND
+  o."Team Naam" != 'Controle Oost' AND
+  o."Team Naam" != 'Controle West'
 ORDER BY
     o."Registratie ID" ASC, -- eventID
     o."species_name_hash" ASC -- species hash (part of occurrenceID)
