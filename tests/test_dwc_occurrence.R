@@ -181,7 +181,8 @@ testthat::test_that("scientificName is never NA and one of the list", {
     "Aponogeton distachyos",
     "Koenigia polystachya",
     "Crassula helmsii",
-    "Pontederia cordata"
+    "Pontederia cordata",
+    "Houttuynia cordata"
   )
   testthat::expect_true(all(!is.na(dwc_occurrence$scientificName)))
   testthat::expect_true(all(dwc_occurrence$scientificName %in% species))
