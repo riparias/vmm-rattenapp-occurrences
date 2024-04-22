@@ -102,6 +102,7 @@ SELECT
     WHEN o."Sporen Waarnemingen Naam" = 'Watercrassula' THEN 'Crassula helmsii'
     WHEN o."Sporen Waarnemingen Naam" = 'Moerashyacint' THEN 'Pontederia cordata'
     WHEN o."Sporen Waarnemingen Naam" = 'Moerasanemoon' THEN 'Houttuynia cordata'
+    WHEN o."Sporen Waarnemingen Naam" = 'Gele maskerbloem' THEN 'Mimulus guttatus DC.'
     -- Animalia
     WHEN o."Sporen Waarnemingen Naam" = 'Muskusrat' THEN 'Ondatra zibethicus'
     WHEN o."Sporen Waarnemingen Naam" = 'Muskusr. > 400gr' THEN 'Ondatra zibethicus'
@@ -176,7 +177,8 @@ SELECT
       o."Sporen Waarnemingen Naam" = 'Afghaanse duizendknoop' OR
       o."Sporen Waarnemingen Naam" = 'Watercrassula' OR
       o."Sporen Waarnemingen Naam" = 'Moerashyacint' OR
-      o."Sporen Waarnemingen Naam" = 'Moerasanemoon' THEN 'Plantae'
+      o."Sporen Waarnemingen Naam" = 'Moerasanemoon' OR
+      o."Sporen Waarnemingen Naam" = 'Gele maskerbloem' THEN 'Plantae'
     ELSE 'Animalia'
   END                                   AS kingdom
 FROM occurrences AS o
