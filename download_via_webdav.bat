@@ -3,6 +3,7 @@ set arg1=%1
 net use w: "https://int-web.vmm.be/ratten" %arg1% /user:INBO
 w:
 copy *.csv C:\Users\damiano_oldoni\Documents\GitHub\vmm-rattenapp-occurrences\data\raw
+copy Fotos\*.jpg C:\Users\damiano_oldoni\Documents\GitHub\vmm-rattenapp-occurrences\data\raw\pictures
 c:
 net use w: /delete
 cd C:\Users\damiano_oldoni\Documents\GitHub\vmm-rattenapp-occurrences\data\raw
