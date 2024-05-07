@@ -49,7 +49,7 @@ SELECT
     WHEN o.Land_Regio = 'Vlaanderen'    THEN 'BE'
     WHEN o.Land_Regio = 'België'        THEN 'BE'
     -- exception: observation in Germany during a training session
-    WHEN o.Land_Regio IS NULL AND o."Registatie ID" = 719114  THEN 'DE'
+    WHEN o.Land_Regio IS NULL AND o."Registratie ID" = 719114  THEN 'DE'
      -- observations have no Land_Regio field and are assumed to be taken in Belgium
     WHEN o.Land_Regio IS NULL           THEN 'BE'
     ELSE NULL
