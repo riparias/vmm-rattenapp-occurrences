@@ -10,7 +10,5 @@ move /y "Vangsten INBO Email-nl-be.csv" "Vangsten from 2022-01-01.csv"
 cd..
 cd..
 w:
-copy Fotos\*.jpg C:\Users\damiano_oldoni\Documents\GitHub\vmm-rattenapp-occurrences\data\raw\pictures
+echo n | copy /-y Fotos\*.jpg C:\Users\damiano_oldoni\Documents\GitHub\vmm-rattenapp-occurrences\data\raw\pictures
 net use w: /delete
-
-
