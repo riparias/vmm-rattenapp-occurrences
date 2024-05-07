@@ -107,6 +107,27 @@ testthat::test_that("eventDate is always filled in", {
   testthat::expect_true(all(!is.na(dwc_occurrence$eventDate)))
 })
 
+testthat::test_that("countryCode is NA or one of the allowed values", {
+  testthat::expect_true(
+    all(dwc_occurrence$countryCode %in% c("BE", "NL", "FR", "DE", NA)
+        )
+    )
+})
+
+testthat::test_that("countryCode is 'DE' for one specific occurrence only", {
+  testthat::expect_identical(
+    dwc_occurrence %>%
+      filter(countryCode == "DE") %>%
+      nrow(), 1L
+    )
+  testthat::expect_identical(
+    dwc_occurrence %>%
+      filter(countryCode == "DE") %>%
+      pull(eventID), 719114
+  )
+})
+
+
 testthat::test_that("locationID is always filled in", {
   testthat::expect_true(all(!is.na(dwc_occurrence$locationID)))
 })
@@ -116,7 +137,12 @@ testthat::test_that("decimalLatitude is always filled in", {
 })
 
 testthat::test_that("decimalLatitude is within Flemish boundaries", {
-  testthat::expect_true(all(dwc_occurrence$decimalLatitude < 51.65))
+  testthat::expect_true(all(dwc_occurrence %>%
+                              # remove exception (obs in Germany)
+                              filter(eventID != 719114) %>%
+                              pull(decimalLatitude) < 51.65
+                            )
+                        )
   testthat::expect_true(all(dwc_occurrence$decimalLatitude > 50.63))
 })
 
@@ -125,7 +151,12 @@ testthat::test_that("decimalLongitude is always filled in", {
 })
 
 testthat::test_that("decimalLongitude is within Flemish boundaries", {
-  testthat::expect_true(all(dwc_occurrence$decimalLongitude < 5.95))
+  testthat::expect_true(all(dwc_occurrence %>%
+                              # remove exception (obs in Germany)
+                              filter(eventID != 719114) %>%
+                              pull(decimalLongitude) < 5.95
+                            )
+                        )
   testthat::expect_true(all(dwc_occurrence$decimalLongitude > 2.450))
 })
 
