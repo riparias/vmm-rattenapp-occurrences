@@ -24,6 +24,7 @@ SELECT
   'Team ' || o."Team Naam"              AS recordedBy,
   CASE
     WHEN o."Vangst Aantal" IS NULL AND o."Sporen Waarnemingen Naam" = '11 waterschildpadden' THEN 11
+    WHEN o."Vangst Aantal" IS NULL AND o."Sporen Waarnemingen Naam" = '11 amerikaanse rivierkree' THEN 11
     WHEN o."Vangst Aantal" IS NULL AND o."Sporen Waarnemingen Naam" = '100  canadese ganzen' THEN 100
     WHEN o."Vangst Aantal" IS NULL AND o."Sporen Waarnemingen Naam" = 'Eendensterfte circa 25 st' THEN 25
     WHEN o."Vangst Aantal" IS NOT NULL THEN CAST(o."Vangst Aantal" AS INT)
@@ -163,6 +164,7 @@ SELECT
     WHEN o."Sporen Waarnemingen Naam" = 'Boommarter' THEN 'Martes martes'
     WHEN o."Sporen Waarnemingen Naam" = 'Nest aziatische hoornaar' THEN 'Vespa velutina'
     WHEN o."Sporen Waarnemingen Naam" = 'Aziatische hoornaar' THEN 'Vespa velutina'
+    WHEN o."Sporen Waarnemingen Naam" = '11 amerikaanse rivierkree' THEN 'Procambarus'
     ELSE NULL
   END                                   AS scientificName,
   CASE
