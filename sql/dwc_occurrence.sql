@@ -165,6 +165,7 @@ SELECT
     WHEN o."Sporen Waarnemingen Naam" = 'Nest aziatische hoornaar' THEN 'Vespa velutina'
     WHEN o."Sporen Waarnemingen Naam" = 'Aziatische hoornaar' THEN 'Vespa velutina'
     WHEN o."Sporen Waarnemingen Naam" = '11 amerikaanse rivierkree' THEN 'Procambarus'
+    WHEN o."Sporen Waarnemingen Naam" = 'Amerikaanse rivierkree 10' THEN 'Procambarus'
     ELSE NULL
   END                                   AS scientificName,
   CASE
