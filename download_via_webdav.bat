@@ -12,4 +12,5 @@ cd..
 w:
 REM echo n | copy /-y Fotos\*.jpg C:\Users\damiano_oldoni\Documents\GitHub\vmm-rattenapp-occurrences\data\raw\pictures
 XCOPY /D /Y /S "Fotos\*.jpg" "C:\Users\damiano_oldoni\Documents\GitHub\vmm-rattenapp-occurrences\data\raw\pictures"
+c:
 net use w: /delete
