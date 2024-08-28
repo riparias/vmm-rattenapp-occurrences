@@ -217,6 +217,7 @@ WHERE
   o."Sporen Waarnemingen Naam" != 'Andere' AND
   o."Sporen Waarnemingen Naam" != 'Nest' AND
   o."Sporen Waarnemingen Naam" != 'Muizen' AND
+  o."Sporen Waarnemingen Naam" != 'Wolf' AND
   o."Team Naam" != 'Controle Oost' AND
   o."Team Naam" != 'Controle West'
 ORDER BY
