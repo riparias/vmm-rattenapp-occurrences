@@ -219,6 +219,8 @@ WHERE
   o."Sporen Waarnemingen Naam" != 'Muizen' AND
   o."Sporen Waarnemingen Naam" != 'Wolf' AND
   o."Sporen Waarnemingen Naam" != 'Horenaar in af geknakte b' AND
+  o."Sporen Waarnemingen Naam" != 'Beversschade - risico' AND
+  -- Remove observations related to control teams
   o."Team Naam" != 'Controle Oost' AND
   o."Team Naam" != 'Controle West'
 ORDER BY
