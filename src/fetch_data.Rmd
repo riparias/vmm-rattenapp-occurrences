@@ -213,6 +213,15 @@ life_mica_obs <-
   )
 ```
 
+Continuous order changes in `occurrences` result in large git commits making difficult to detect "real" changes. To avoid this, we sort the `occurrences` by `Registratie ID` and `species_name_hash`:
+
+```{r order_occurrences}
+message("Order occurrences...")
+occurrences <- 
+  occurrences %>%
+  arrange(.data$`Registratie ID`, .data$species_name_hash)
+```
+
 # Save data
 
 We save `occurrences` as an interim csv file:
