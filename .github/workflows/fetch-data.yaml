@@ -7,7 +7,8 @@ on:
     - main
     paths:
     - data/raw/**
-
+  
+  workflow_dispatch:
 
 name: fetch-data
 
