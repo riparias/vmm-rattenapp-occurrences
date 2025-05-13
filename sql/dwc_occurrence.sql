@@ -38,6 +38,7 @@ SELECT
     WHEN o."Sporen Waarnemingen Naam" = 'Nest aziatische hoornaar' THEN 'found as nest'
     ELSE NULL
   END                                   AS occurrenceRemarks,
+  'verified'                            AS identificationVerificationStatus,
 -- EVENT
   o."Registratie ID"                    AS eventID,
   date(o.Dag)                           AS eventDate,
