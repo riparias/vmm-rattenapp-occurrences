@@ -3,6 +3,8 @@ on:
     branches:
       - 'automatic**'
 
+  workflow_dispatch:
+
 name: mapping and testing
 
 jobs:
