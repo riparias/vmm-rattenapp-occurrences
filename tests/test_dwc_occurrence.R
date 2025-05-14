@@ -199,7 +199,7 @@ testthat::test_that("scientificName is never NA and one of the list", {
     "Psittacula krameri",
     "Emydidae",
     "Eriocheir sinensis",
-    "Alopochen aegyptiacus",
+    "Alopochen aegyptiaca",
     "Procyon lotor",
     "Trachemys scripta scripta",
     "Dendrocygna bicolor",
