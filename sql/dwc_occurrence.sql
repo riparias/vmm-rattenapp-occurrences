@@ -139,7 +139,7 @@ SELECT
     WHEN o."Sporen Waarnemingen Naam" = 'Wolhandkrab' THEN 'Eriocheir sinensis'
     WHEN o."Sporen Waarnemingen Naam" = 'Nijlgans' THEN 'Alopochen aegyptiaca'
     WHEN o."Sporen Waarnemingen Naam" = 'Nijlganzen' THEN 'Alopochen aegyptiaca'
-    WHEN o."Sporen Waarnemingen Naam" = 'Nijlganzen nest' THEN 'Alopochen aegyptiacus'
+    WHEN o."Sporen Waarnemingen Naam" = 'Nijlganzen nest' THEN 'Alopochen aegyptiaca'
     WHEN o."Sporen Waarnemingen Naam" = 'Pootafdrukken wasbeer' THEN 'Procyon lotor'
     WHEN o."Sporen Waarnemingen Naam" = 'Geelbuikschildpad' THEN 'Trachemys scripta scripta'
     WHEN o."Sporen Waarnemingen Naam" = 'Geelwangwaterschildpadden' THEN 'Trachemys scripta troosti'
