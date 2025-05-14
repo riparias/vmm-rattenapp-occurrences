@@ -24,6 +24,7 @@ testthat::test_that("Right columns in right order", {
     "recordedBy",
     "individualCount",
     "occurrenceRemarks",
+    "identificationVerificationStatus",
     "eventID",
     "eventDate",
     "locationID",
@@ -96,6 +97,20 @@ testthat::test_that("occurrenceRemarks values", {
       arrange(occurrenceRemarks) %>%
       pull(),
     c("found as nest", "found as tracks", "found dead", NA_character_)
+  )
+})
+
+testthat::test_that("identificationVerificationStatus is always filled in", {
+  testthat::expect_true(all(!is.na(dwc_occurrence$identificationVerificationStatus)))
+})
+
+testthat::test_that("identificationVerificationStatus is always 'verified'", {
+  testthat::expect_equal(
+    dwc_occurrence %>%
+      dplyr::distinct(identificationVerificationStatus) %>%
+      arrange(identificationVerificationStatus) %>%
+      pull(),
+    "verified"
   )
 })
 
