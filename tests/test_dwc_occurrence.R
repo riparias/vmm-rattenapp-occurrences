@@ -100,6 +100,20 @@ testthat::test_that("occurrenceRemarks values", {
   )
 })
 
+testthat::test_that("identificationVerificationStatus is always filled in", {
+  testthat::expect_true(all(!is.na(dwc_occurrence$identificationVerificationStatus)))
+})
+
+testthat::test_that("identificationVerificationStatus is always 'verified'", {
+  testthat::expect_equal(
+    dwc_occurrence %>%
+      dplyr::distinct(identificationVerificationStatus) %>%
+      arrange(identificationVerificationStatus) %>%
+      pull(),
+    "verified"
+  )
+})
+
 testthat::test_that("eventID is always filled in", {
   testthat::expect_true(all(!is.na(dwc_occurrence$eventID)))
 })
