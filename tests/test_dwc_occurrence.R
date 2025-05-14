@@ -24,6 +24,7 @@ testthat::test_that("Right columns in right order", {
     "recordedBy",
     "individualCount",
     "occurrenceRemarks",
+    "identificationVerificationStatus",
     "eventID",
     "eventDate",
     "locationID",
