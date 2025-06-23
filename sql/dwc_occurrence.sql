@@ -93,6 +93,7 @@ SELECT
     -- Bacteria
     WHEN o."Sporen Waarnemingen Naam" = 'Blauwalg' THEN 'Cyanobacteria'
     -- Plantae
+    WHEN o."Sporen Waarnemingen Naam" = 'Japans hoefblad' THEN 'Petasites japonicus'
     WHEN o."Sporen Waarnemingen Naam" = 'Japanse duizendknoop' THEN 'Fallopia japonica'
     WHEN o."Sporen Waarnemingen Naam" = 'Reuzenberenklauw' THEN 'Heracleum mantegazzianum'
     WHEN o."Sporen Waarnemingen Naam" = 'Parelvederkruid' THEN 'Myriophyllum aquaticum'
@@ -174,7 +175,8 @@ SELECT
   END                                   AS scientificName,
   CASE
     WHEN o."Sporen Waarnemingen Naam" = 'Blauwalg' THEN 'Bacteria'
-    WHEN o."Sporen Waarnemingen Naam" = 'Japanse duizendknoop' OR
+    WHEN o."Sporen Waarnemingen Naam" = 'Japans hoefblad' OR
+      o."Sporen Waarnemingen Naam" = 'Japanse duizendknoop' OR
       o."Sporen Waarnemingen Naam" = 'Reuzenberenklauw' OR
       o."Sporen Waarnemingen Naam" = 'Parelvederkruid' OR
       o."Sporen Waarnemingen Naam" = 'Waterteunisbloem' OR
