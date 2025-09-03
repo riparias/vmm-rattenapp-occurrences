@@ -226,6 +226,8 @@ WHERE
   o."Sporen Waarnemingen Naam" != 'Wolf' AND
   o."Sporen Waarnemingen Naam" != 'Horenaar in af geknakte b' AND
   o."Sporen Waarnemingen Naam" != 'Beversschade - risico' AND
+  o."Sporen Waarnemingen Naam" != 'Wespennest in oever .😳' AND
+  o."Sporen Waarnemingen Naam" != 'Geelwang' AND
   -- Remove observations related to control teams
   o."Team Naam" != 'Controle Oost' AND
   o."Team Naam" != 'Controle West'
