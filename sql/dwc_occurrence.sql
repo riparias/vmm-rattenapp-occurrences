@@ -97,6 +97,7 @@ SELECT
     WHEN o."Sporen Waarnemingen Naam" = 'Japanse duizendknoop' THEN 'Fallopia japonica'
     WHEN o."Sporen Waarnemingen Naam" = 'Reuzenberenklauw' THEN 'Heracleum mantegazzianum'
     WHEN o."Sporen Waarnemingen Naam" = 'Parelvederkruid' THEN 'Myriophyllum aquaticum'
+    WHEN o."Sporen Waarnemingen Naam" = 'Ongelijkbladig vederkruid' THEN 'Myriophyllum heterophyllum'
     WHEN o."Sporen Waarnemingen Naam" = 'Waterteunisbloem' THEN 'Ludwigia grandiflora'
     WHEN o."Sporen Waarnemingen Naam" = 'Reuzenbalsemien' THEN 'Impatiens glandulifera'
     WHEN o."Sporen Waarnemingen Naam" = 'Grote waternavel' THEN 'Hydrocotyle ranunculoides'
@@ -179,6 +180,7 @@ SELECT
       o."Sporen Waarnemingen Naam" = 'Japanse duizendknoop' OR
       o."Sporen Waarnemingen Naam" = 'Reuzenberenklauw' OR
       o."Sporen Waarnemingen Naam" = 'Parelvederkruid' OR
+      o."Sporen Waarnemingen Naam" = 'Ongelijkbladig vederkruid' OR
       o."Sporen Waarnemingen Naam" = 'Waterteunisbloem' OR
       o."Sporen Waarnemingen Naam" = 'Reuzenbalsemien' OR
       o."Sporen Waarnemingen Naam" = 'Grote waternavel' OR

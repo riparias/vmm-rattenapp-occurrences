@@ -182,6 +182,7 @@ testthat::test_that("scientificName is never NA and one of the list", {
     "Impatiens glandulifera",
     "Ludwigia grandiflora",
     "Myriophyllum aquaticum",
+    "Myriophyllum heterophyllum",
     "Heracleum mantegazzianum",
     "Fallopia japonica",
     "Cyanobacteria",
