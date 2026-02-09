@@ -170,7 +170,7 @@ SELECT
     WHEN o."Sporen Waarnemingen Naam" = 'Aziatische hoornaar' THEN 'Vespa velutina'
     WHEN o."Sporen Waarnemingen Naam" = '11 amerikaanse rivierkree' THEN 'Procambarus'
     WHEN o."Sporen Waarnemingen Naam" = 'Amerikaanse rivierkree 10' THEN 'Procambarus'
-    WHEN o."" = 'Amerikaanse rivierkreek' THEN 'Procambarus'
+    WHEN o."Sporen Waarnemingen Naam" = 'Amerikaanse rivierkreek' THEN 'Procambarus'
     WHEN o."Sporen Waarnemingen Naam" = 'Gevlekte amerikaanse' THEN 'Faxonius limosus'
     WHEN o."Sporen Waarnemingen Naam" = 'Rode ibis' THEN 'Eudocimus ruber'
     ELSE NULL
