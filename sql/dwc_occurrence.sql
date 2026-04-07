@@ -108,6 +108,7 @@ SELECT
     WHEN o."Sporen Waarnemingen Naam" = 'Watercrassula' THEN 'Crassula helmsii'
     WHEN o."Sporen Waarnemingen Naam" = 'Moerashyacint' THEN 'Pontederia cordata'
     WHEN o."Sporen Waarnemingen Naam" = 'Moerasanemoon' THEN 'Houttuynia cordata'
+    WHEN o."Sporen Waarnemingen Naam" = 'Moeraslantaarn' THEN 'Lysichiton americanus'
     WHEN o."Sporen Waarnemingen Naam" = 'Gele maskerbloem' THEN 'Mimulus guttatus DC.'
     WHEN o."Sporen Waarnemingen Naam" = 'Watersla' THEN 'Pistia stratiotes'
     -- Animalia
@@ -194,6 +195,7 @@ SELECT
       o."Sporen Waarnemingen Naam" = 'Watercrassula' OR
       o."Sporen Waarnemingen Naam" = 'Moerashyacint' OR
       o."Sporen Waarnemingen Naam" = 'Moerasanemoon' OR
+      o."Sporen Waarnemingen Naam" = 'Moeraslantaarn' OR
       o."Sporen Waarnemingen Naam" = 'Watersla' OR
       o."Sporen Waarnemingen Naam" = 'Gele maskerbloem' THEN 'Plantae'
     ELSE 'Animalia'

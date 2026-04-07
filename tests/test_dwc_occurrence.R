@@ -227,6 +227,7 @@ testthat::test_that("scientificName is never NA and one of the list", {
     "Cabomba caroliniana",
     "Aponogeton distachyos",
     "Koenigia polystachya",
+    "Lysichiton americanus",
     "Crassula helmsii",
     "Pontederia cordata",
     "Houttuynia cordata",
