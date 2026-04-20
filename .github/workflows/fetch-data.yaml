@@ -7,7 +7,7 @@ on:
     - main
     paths:
     - data/raw/**
-  
+
   workflow_dispatch:
 
 name: fetch-data
@@ -40,6 +40,7 @@ jobs:
         with:
           r-version: ${{ matrix.config.r }}
           http-user-agent: ${{ matrix.config.http-user-agent }}
+          use-public-rspm: true
 
       - name: Setup pandoc
         uses: r-lib/actions/setup-pandoc@v2
