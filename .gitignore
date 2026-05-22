@@ -45,3 +45,4 @@ src/*.pdf
 
 # Pictures
 data/raw/pictures/*
+.positai

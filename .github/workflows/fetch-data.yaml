@@ -63,7 +63,7 @@ jobs:
         shell: Rscript {0}
 
       - name: Commit and push changes
-        uses: devops-infra/action-commit-push@master
+        uses: devops-infra/action-commit-push@v1.2.0
         with:
           github_token: ${{ secrets.WORKFLOWS }}
           commit_prefix: "[AUTO]"
