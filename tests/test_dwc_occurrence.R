@@ -236,6 +236,7 @@ testthat::test_that("scientificName is never NA and one of the list", {
     "Pistia stratiotes",
     "Eudocimus ruber",
     "Petasites japonicus",
+    "Lithobates catesbeianus",
     "Faxonius limosus"
   )
   testthat::expect_true(all(!is.na(dwc_occurrence$scientificName)))
