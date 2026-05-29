@@ -175,6 +175,7 @@ SELECT
     WHEN o."Sporen Waarnemingen Naam" = 'Amerikaanse rivierkreeft' THEN 'Procambarus'
     WHEN o."Sporen Waarnemingen Naam" = 'Gevlekte amerikaanse' THEN 'Faxonius limosus'
     WHEN o."Sporen Waarnemingen Naam" = 'Gevlekte amerikaanse rivi' THEN 'Faxonius limosus'
+    WHEN o."Sporen Waarnemingen Naam" = 'Stierkikker' THEN 'Lithobates catesbeianus'
     WHEN o."Sporen Waarnemingen Naam" = 'Rode ibis' THEN 'Eudocimus ruber'
     ELSE NULL
   END                                   AS scientificName,
