@@ -1,0 +1,204 @@
+on:
+  schedule:
+    - cron: "0 3 * * *"
+
+  push:
+    branches:
+    - main
+    paths:
+    - data/raw/**
+
+  workflow_dispatch:
+
+name: fetch-data
+
+jobs:
+  fetch-data:
+    runs-on: ${{ matrix.config.os }}
+
+    name: ${{ matrix.config.os }} (${{ matrix.config.r }})
+
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - {os: ubuntu-latest,   r: 'release'}
+    env:
+      R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
+      RSPM: ${{ matrix.config.rspm }}
+      GITHUB_TOKEN: ${{ secrets.WORKFLOWS }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.WORKFLOWS }}
+
+      - name: Setup R
+        uses: r-lib/actions/setup-r@v2
+        with:
+          r-version: ${{ matrix.config.r }}
+          http-user-agent: ${{ matrix.config.http-user-agent }}
+          use-public-rspm: true
+
+      - name: Setup pandoc
+        uses: r-lib/actions/setup-pandoc@v2
+
+      - name: Install linux libraries
+        run: |
+          sudo apt install libsodium-dev
+          sudo apt-get install libcurl4-openssl-dev
+          sudo apt-get install libgdal-dev libproj-dev
+          sudo apt install libudunits2-dev
+
+      - name: Install R packages
+        run: |
+          source("src/install_packages.R")
+        shell: Rscript {0}
+
+      - name: Fetch data
+        id: fetch-data
+        run: |
+          source("src/run_fetch_data.R")
+        shell: Rscript {0}
+        continue-on-error: true
+
+      - name: Create issue if fetch data fails
+        if: steps.fetch-data.outcome == 'failure'
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.WORKFLOWS }}
+          script: |
+            github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: '[AUTO] Data fetch failed',
+              body: `This is an automated issue.\n\nThe data fetching step failed in the workflow run.\n\nFailed run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              labels: ['automated', 'fetch-error']
+            })
+
+      - name: Fail workflow if fetch failed
+        if: steps.fetch-data.outcome == 'failure'
+        run: exit 1
+
+      - name: Commit and push changes
+        uses: devops-infra/action-commit-push@v1.2.0
+        with:
+          github_token: ${{ secrets.WORKFLOWS }}
+          commit_prefix: "[AUTO]"
+          commit_message: "Fetch data"
+          target_branch: automatic-update
+          add_timestamp: true
+
+      - name: Get branch name
+        run: |
+          git branch --show-current
+
+      - name: Create pull request
+        uses: devops-infra/action-pull-request@v1.1.1
+        with:
+          github_token: ${{ secrets.WORKFLOWS }}
+          target_branch: main
+          title: "[AUTO] Update data"
+          template: .github/PULL_REQUEST_TEMPLATE.md
+          label: automated
+          get_diff: false
+
+      - name: Mapping to DwC
+        run: |
+          source("src/run_dwc_mapping.R")
+        shell: Rscript {0}
+
+      - name: Commit and push changes
+        uses: devops-infra/action-commit-push@v1.2.0
+        with:
+          github_token: ${{ secrets.WORKFLOWS }}
+          commit_prefix: "[AUTO]"
+          commit_message: "Mapping"
+
+      - name: Run tests
+        id: run-tests
+        run: |
+          source("tests/test_dwc_occurrence.R")
+        shell: Rscript {0}
+        continue-on-error: true
+
+      - name: Create issue if tests fail
+        if: steps.run-tests.outcome == 'failure'
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.WORKFLOWS }}
+          script: |
+            github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: '[AUTO] Tests failed',
+              body: `This is an automated issue.\n\nThe tests failed in the workflow run.\n\nFailed run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              labels: ['automated', 'test-failure']
+            })
+
+      - name: Fail workflow if tests failed
+        if: steps.run-tests.outcome == 'failure'
+        run: exit 1
+
+      - name: Approve PR if tests pass
+        if: steps.run-tests.outcome == 'success'
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.WORKFLOWS }}
+          script: |
+            const { data: pullRequests } = await github.rest.pulls.list({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              head: `${context.repo.owner}:automatic-update`,
+              state: 'open'
+            });
+            
+            if (pullRequests.length > 0) {
+              const pr = pullRequests[0];
+              
+              // Add approved label
+              await github.rest.issues.addLabels({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: pr.number,
+                labels: ['approved']
+              });
+              
+              // Approve the PR
+              await github.rest.pulls.createReview({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: pr.number,
+                event: 'APPROVE',
+                body: 'Tests passed successfully. Automatically approved.'
+              });
+            }
+
+      - name: Merge PR
+        if: steps.run-tests.outcome == 'success'
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.WORKFLOWS }}
+          script: |
+            const { data: pullRequests } = await github.rest.pulls.list({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              head: `${context.repo.owner}:automatic-update`,
+              state: 'open'
+            });
+            
+            if (pullRequests.length > 0) {
+              const pr = pullRequests[0];
+              
+              // Merge the PR
+              await github.rest.pulls.merge({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: pr.number,
+                commit_title: '[AUTO] Merge data update',
+                merge_method: 'merge'
+              });
+            }
+      
