@@ -61,28 +61,28 @@ jobs:
         shell: Rscript {0}
 
       - name: Fetch data
-        id: fetch-data
+        id: fetch_data
         run: |
           source("src/run_fetch_data.R")
         shell: Rscript {0}
         continue-on-error: true
 
       - name: Create issue if fetch data fails
-        if: steps.fetch-data.outcome == 'failure'
+        if: steps.fetch_data.outcome == 'failure'
         uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.WORKFLOWS }}
           script: |
-            github.rest.issues.create({
+            await github.rest.issues.create({
               owner: context.repo.owner,
               repo: context.repo.repo,
               title: '[AUTO] Data fetch failed',
               body: `This is an automated issue.\n\nThe data fetching step failed in the workflow run.\n\nFailed run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
-              labels: ['automated', 'fetch-error']
+              labels: ['automated workflow', 'bug']
             })
 
       - name: Fail workflow if fetch failed
-        if: steps.fetch-data.outcome == 'failure'
+        if: steps.fetch_data.outcome == 'failure'
         run: exit 1
 
       - name: Commit and push changes
