@@ -155,9 +155,29 @@ jobs:
             }
 
       - name: Mapping to DwC
+        id: dwc_mapping
         run: |
           source("src/run_dwc_mapping.R")
         shell: Rscript {0}
+        continue-on-error: true
+
+      - name: Create issue if mapping fails
+        if: steps.dwc_mapping.outcome == 'failure'
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.WORKFLOWS }}
+          script: |
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: '[AUTO] Mapping failed',
+              body: `This is an automated issue.\n\nThe DwC mapping step failed in the workflow run.\n\nFailed run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              labels: ['automated workflow', 'bug']
+            })
+
+      - name: Fail workflow if mapping failed
+        if: steps.dwc_mapping.outcome == 'failure'
+        run: exit 1
 
       - name: Commit and push changes
         uses: devops-infra/action-commit-push@v1.2.0
@@ -165,7 +185,7 @@ jobs:
           github_token: ${{ secrets.WORKFLOWS }}
           commit_prefix: "[AUTO]"
           commit_message: "Mapping"
-
+          target_branch: automatic-update
       - name: Run tests
         id: run-tests
         run: |
