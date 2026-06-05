@@ -19,8 +19,8 @@ permissions:
 
 jobs:
   fetch-data:
+    if: github.event_name != 'push' || !startsWith(github.event.head_commit.message, '[AUTO]')
     runs-on: ${{ matrix.config.os }}
-
     name: ${{ matrix.config.os }} (${{ matrix.config.r }})
 
     strategy:
