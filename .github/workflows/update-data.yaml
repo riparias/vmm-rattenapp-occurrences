@@ -149,7 +149,7 @@ jobs:
                   owner: context.repo.owner,
                   repo: context.repo.repo,
                   issue_number: newPRs[0].number,
-                  labels: ['automated']
+                  labels: ['automated workflow']
                 });
               }
             }
