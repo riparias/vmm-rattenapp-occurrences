@@ -78,7 +78,7 @@ jobs:
               repo: context.repo.repo,
               title: '[AUTO] Data fetch failed',
               body: `This is an automated issue.\n\nThe data fetching step failed in the workflow run.\n\nFailed run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
-              labels: ['automated workflow', 'bug']
+              labels: ['automated workflow', 'fetch']
             })
 
       - name: Fail workflow if fetch failed
@@ -172,7 +172,7 @@ jobs:
               repo: context.repo.repo,
               title: '[AUTO] Mapping failed',
               body: `This is an automated issue.\n\nThe DwC mapping step failed in the workflow run.\n\nFailed run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
-              labels: ['automated workflow', 'bug']
+              labels: ['automated workflow', 'mapping']
             })
 
       - name: Fail workflow if mapping failed
@@ -204,7 +204,7 @@ jobs:
               repo: context.repo.repo,
               title: '[AUTO] Tests failed',
               body: `This is an automated issue.\n\nThe tests failed in the workflow run.\n\nFailed run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
-              labels: ['automated workflow', 'bug']
+              labels: ['automated workflow', 'testing']
             })
 
       - name: Fail workflow if tests failed
@@ -226,14 +226,6 @@ jobs:
             
             if (pullRequests.length > 0) {
               const pr = pullRequests[0];
-              
-              // Add approved label
-              await github.rest.issues.addLabels({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: pr.number,
-                labels: ['approved']
-              });
               
               // Approve the PR
               await github.rest.pulls.createReview({
