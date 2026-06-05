@@ -212,7 +212,7 @@ jobs:
         run: exit 1
 
       - name: Approve PR if tests pass
-        if: steps.run-tests.outcome == 'success'
+        if: steps.run_tests.outcome == 'success'
         uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.WORKFLOWS }}
