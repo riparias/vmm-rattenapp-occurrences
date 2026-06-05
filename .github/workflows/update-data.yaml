@@ -228,7 +228,7 @@ jobs:
             });
             
             if (pullRequests.length > 0) {
-              const pr = pullRequests[0];
+              const pr = pullRequests.find(pr => pr.title === '[AUTO] Update data' && pr.base?.ref === 'main') ?? pullRequests[0];
               
               await github.rest.issues.addLabels({
                 owner: context.repo.owner,
