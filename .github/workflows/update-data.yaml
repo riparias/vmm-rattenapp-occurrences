@@ -17,6 +17,9 @@ permissions:
   issues: write
   pull-requests: write
 
+concurrency:
+  group: update-data
+  cancel-in-progress: true
 jobs:
   fetch-data:
     if: github.event_name != 'push' || !startsWith(github.event.head_commit.message, '[AUTO]')
