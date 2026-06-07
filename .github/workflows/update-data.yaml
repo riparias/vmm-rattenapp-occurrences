@@ -87,7 +87,7 @@ jobs:
         if: steps.fetch_data.outcome == 'failure'
         run: exit 1
 
-      - name: Commit and push changes
+      - name: Commit and push fetched data
         uses: devops-infra/action-commit-push@v1.2.0
         with:
           github_token: ${{ github.token }}
