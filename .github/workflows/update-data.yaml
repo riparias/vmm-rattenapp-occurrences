@@ -147,10 +147,12 @@ jobs:
               });
               
               if (newPRs.length > 0) {
+                const pr = newPRs.find(pr => pr.title === '[AUTO] Update data' && pr.base?.ref === 'main') ?? newPRs[0];
+
                 await github.rest.issues.addLabels({
                   owner: context.repo.owner,
                   repo: context.repo.repo,
-                  issue_number: newPRs[0].number,
+                  issue_number: pr.number,
                   labels: ['automated workflow']
                 });
               }
