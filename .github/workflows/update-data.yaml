@@ -87,7 +87,18 @@ jobs:
         if: steps.fetch_data.outcome == 'failure'
         run: exit 1
 
+      - name: Check for fetched data changes
+        id: fetch_changes
+        run: |
+          if git status --porcelain | grep -q .; then
+            echo "has_changes=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_changes=false" >> "$GITHUB_OUTPUT"
+            echo "No changes detected after fetching data."
+          fi
+
       - name: Commit and push fetched data
+        if: steps.fetch_changes.outputs.has_changes == 'true'
         uses: devops-infra/action-commit-push@v1.2.0
         with:
           github_token: ${{ github.token }}
@@ -97,10 +108,12 @@ jobs:
           add_timestamp: true
 
       - name: Get branch name
+        if: steps.fetch_changes.outputs.has_changes == 'true'
         run: |
           git branch --show-current
 
       - name: Create pull request
+        if: steps.fetch_changes.outputs.has_changes == 'true'
         uses: actions/github-script@v7
         with:
           github-token: ${{ github.token }}
@@ -162,6 +175,7 @@ jobs:
             }
 
       - name: Mapping to DwC
+        if: steps.fetch_changes.outputs.has_changes == 'true'
         id: dwc_mapping
         run: |
           source("src/run_dwc_mapping.R")
@@ -187,6 +201,7 @@ jobs:
         run: exit 1
 
       - name: Commit and push mapped data
+        if: steps.fetch_changes.outputs.has_changes == 'true'
         uses: devops-infra/action-commit-push@v1.2.0
         with:
           github_token: ${{ github.token }}
@@ -194,6 +209,7 @@ jobs:
           commit_message: "Mapping"
           target_branch: automatic-update
       - name: Run tests
+        if: steps.fetch_changes.outputs.has_changes == 'true'
         id: run_tests
         run: |
           testthat::test_file("tests/test_dwc_occurrence.R", reporter = "stop")
@@ -219,7 +235,7 @@ jobs:
         run: exit 1
 
       - name: Add approved label to PR if tests pass
-        if: steps.run_tests.outcome == 'success'
+        if: steps.fetch_changes.outputs.has_changes == 'true' && steps.run_tests.outcome == 'success'
         uses: actions/github-script@v7
         with:
           github-token: ${{ github.token }}
@@ -243,7 +259,7 @@ jobs:
             }
 
       - name: Merge PR
-        if: steps.run_tests.outcome == 'success'
+        if: steps.fetch_changes.outputs.has_changes == 'true' && steps.run_tests.outcome == 'success'
         uses: actions/github-script@v7
         with:
           github-token: ${{ github.token }}
