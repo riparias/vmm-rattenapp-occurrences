@@ -139,6 +139,9 @@ jobs:
               });
               
               // Add label to the newly created PR
+              // (give GitHub a moment to index the PR before listing)
+              await new Promise(resolve => setTimeout(resolve, 5000));
+
               const { data: newPRs } = await github.rest.pulls.list({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
