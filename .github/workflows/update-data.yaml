@@ -183,7 +183,7 @@ jobs:
         if: steps.dwc_mapping.outcome == 'failure'
         run: exit 1
 
-      - name: Commit and push changes
+      - name: Commit and push mapped data
         uses: devops-infra/action-commit-push@v1.2.0
         with:
           github_token: ${{ github.token }}
