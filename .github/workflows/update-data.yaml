@@ -10,7 +10,7 @@ on:
 
   workflow_dispatch:
 
-name: fetch-data
+name: update-data
 
 permissions:
   contents: write
