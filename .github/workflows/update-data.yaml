@@ -192,7 +192,7 @@ jobs:
       - name: Run tests
         id: run_tests
         run: |
-          source("tests/test_dwc_occurrence.R")
+          testthat::test_file("tests/test_dwc_occurrence.R", reporter = "stop")
         shell: Rscript {0}
         continue-on-error: true
 
