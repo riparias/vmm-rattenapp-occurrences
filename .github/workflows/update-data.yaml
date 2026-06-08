@@ -245,7 +245,8 @@ jobs:
             });
             
             if (pullRequests.length > 0) {
-              const pr = pullRequests.find(pr => pr.title === '[AUTO] Update data' && pr.base?.ref === 'main') ?? pullRequests[0];
+              const pr = pullRequests.find(pr => pr.title === '[AUTO] Update data' && pr.base?.ref === 'main');
+              if (!pr) throw new Error("Expected an open PR '[AUTO] Update data' targeting 'main' from 'automatic-update', but none was found.");
               
               await github.rest.issues.addLabels({
                 owner: context.repo.owner,
