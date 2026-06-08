@@ -98,7 +98,6 @@ jobs:
           fi
 
       - name: Commit and push fetched data
-        if: steps.fetch_changes.outputs.has_changes == 'true'
         uses: devops-infra/action-commit-push@v1.5.0
         with:
           github_token: ${{ github.token }}
@@ -108,7 +107,6 @@ jobs:
           add_timestamp: true
 
       - name: Get branch name
-        if: steps.fetch_changes.outputs.has_changes == 'true'
         run: |
           git branch --show-current
 
