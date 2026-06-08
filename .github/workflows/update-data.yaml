@@ -97,20 +97,15 @@ jobs:
             echo "No changes detected after fetching data."
           fi
 
-      - name: Commit and push fetched data
-        if: steps.fetch_changes.outputs.has_changes == 'true'
-        uses: devops-infra/action-commit-push@v1.2.0
-        with:
-          github_token: ${{ github.token }}
-          commit_prefix: "[AUTO]"
-          commit_message: "Fetch data"
-          target_branch: automatic-update
-          add_timestamp: true
-
-      - name: Get branch name
+      - name: Create automatic-update branch and commit fetched data
         if: steps.fetch_changes.outputs.has_changes == 'true'
         run: |
-          git branch --show-current
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git checkout -B automatic-update
+          git add -A
+          git commit -m "[AUTO] Fetch data $(date +'%Y-%m-%d %H:%M:%S')"
+          git push origin automatic-update --force
 
       - name: Create pull request
         if: steps.fetch_changes.outputs.has_changes == 'true'
@@ -142,7 +137,7 @@ jobs:
               // Append workflow run link
               prBody += `\n\n---\n\nWorkflow run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
               
-              await github.rest.pulls.create({
+              const { data: newPR } = await github.rest.pulls.create({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 title: '[AUTO] Update data',
@@ -151,27 +146,13 @@ jobs:
                 body: prBody
               });
               
-              // Add label to the newly created PR
-              // (give GitHub a moment to index the PR before listing)
-              await new Promise(resolve => setTimeout(resolve, 5000));
-
-              const { data: newPRs } = await github.rest.pulls.list({
+              // Add label to the newly created PR using its number directly
+              await github.rest.issues.addLabels({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                head: `${context.repo.owner}:automatic-update`,
-                state: 'open'
+                issue_number: newPR.number,
+                labels: ['automated workflow']
               });
-              
-              if (newPRs.length > 0) {
-                const pr = newPRs.find(pr => pr.title === '[AUTO] Update data' && pr.base?.ref === 'main') ?? newPRs[0];
-
-                await github.rest.issues.addLabels({
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  issue_number: pr.number,
-                  labels: ['automated workflow']
-                });
-              }
             }
 
       - name: Mapping to DwC
@@ -202,12 +183,11 @@ jobs:
 
       - name: Commit and push mapped data
         if: steps.fetch_changes.outputs.has_changes == 'true'
-        uses: devops-infra/action-commit-push@v1.2.0
-        with:
-          github_token: ${{ github.token }}
-          commit_prefix: "[AUTO]"
-          commit_message: "Mapping"
-          target_branch: automatic-update
+        run: |
+          git add -A
+          git diff --cached --quiet || git commit -m "[AUTO] Mapping"
+          git push origin automatic-update --force
+
       - name: Run tests
         if: steps.fetch_changes.outputs.has_changes == 'true'
         id: run_tests
