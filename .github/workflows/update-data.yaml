@@ -99,7 +99,7 @@ jobs:
 
       - name: Commit and push fetched data
         if: steps.fetch_changes.outputs.has_changes == 'true'
-        uses: devops-infra/action-commit-push@v1.2.0
+        uses: devops-infra/action-commit-push@v1.5.0
         with:
           github_token: ${{ github.token }}
           commit_prefix: "[AUTO]"
@@ -202,7 +202,7 @@ jobs:
 
       - name: Commit and push mapped data
         if: steps.fetch_changes.outputs.has_changes == 'true'
-        uses: devops-infra/action-commit-push@v1.2.0
+        uses: devops-infra/action-commit-push@v1.5.0
         with:
           github_token: ${{ github.token }}
           commit_prefix: "[AUTO]"
