@@ -91,23 +91,76 @@ jobs:
             echo "No changes detected after fetching data."
           fi
 
-      - name: Commit and push fetched data on a new branch
+      - name: Mapping to DwC
         if: steps.fetch_changes.outputs.has_changes == 'true'
+        id: dwc_mapping
+        run: |
+          source("src/run_dwc_mapping.R")
+        shell: Rscript {0}
+        continue-on-error: true
+
+      - name: Create issue if mapping fails
+        if: steps.dwc_mapping.outcome == 'failure'
+        uses: actions/github-script@v9
+        with:
+          github-token: ${{ github.token }}
+          script: |
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: '[AUTO] Mapping failed',
+              body: `This is an automated issue.\n\nThe DwC mapping step failed in the workflow run.\n\nFailed run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              labels: ['automated workflow', 'mapping']
+            })
+
+      - name: Fail workflow if mapping failed
+        if: steps.dwc_mapping.outcome == 'failure'
+        run: exit 1
+
+      - name: Run tests
+        if: steps.fetch_changes.outputs.has_changes == 'true'
+        id: run_tests
+        run: |
+          testthat::test_file("tests/test_dwc_occurrence.R", reporter = "stop")
+        shell: Rscript {0}
+        continue-on-error: true
+
+      - name: Create issue if tests fail
+        if: steps.run_tests.outcome == 'failure'
+        uses: actions/github-script@v9
+        with:
+          github-token: ${{ github.token }}
+          script: |
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: '[AUTO] Tests failed',
+              body: `This is an automated issue.\n\nThe tests failed in the workflow run.\n\nFailed run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              labels: ['automated workflow', 'testing']
+            })
+
+      - name: Fail workflow if tests failed
+        if: steps.run_tests.outcome == 'failure'
+        run: exit 1
+
+      - name: Commit and push all changes
+        if: steps.fetch_changes.outputs.has_changes == 'true' && steps.run_tests.outcome == 'success'
         uses: devops-infra/action-commit-push@f066ea8e19660de57d3d3a4a0b9d294ea2612e20 # v1.5.0
         with:
           github_token: ${{ github.token }}
           commit_prefix: "[AUTO]"
-          commit_message: "Fetch data"
+          commit_message: "Update data"
           target_branch: automatic-update
           add_timestamp: true
 
       - name: Get branch name
+        if: steps.fetch_changes.outputs.has_changes == 'true' && steps.run_tests.outcome == 'success'
         id: branch_name
         run: |
           echo "name=$(git branch --show-current)" >> "$GITHUB_OUTPUT"
 
       - name: Create pull request
-        if: steps.fetch_changes.outputs.has_changes == 'true'
+        if: steps.fetch_changes.outputs.has_changes == 'true' && steps.run_tests.outcome == 'success'
         uses: actions/github-script@v9
         with:
           github-token: ${{ github.token }}
@@ -154,66 +207,6 @@ jobs:
                 labels: ['automated workflow']
               });
             }
-
-      - name: Mapping to DwC
-        if: steps.fetch_changes.outputs.has_changes == 'true'
-        id: dwc_mapping
-        run: |
-          source("src/run_dwc_mapping.R")
-        shell: Rscript {0}
-        continue-on-error: true
-
-      - name: Create issue if mapping fails
-        if: steps.dwc_mapping.outcome == 'failure'
-        uses: actions/github-script@v9
-        with:
-          github-token: ${{ github.token }}
-          script: |
-            await github.rest.issues.create({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              title: '[AUTO] Mapping failed',
-              body: `This is an automated issue.\n\nThe DwC mapping step failed in the workflow run.\n\nFailed run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
-              labels: ['automated workflow', 'mapping']
-            })
-
-      - name: Fail workflow if mapping failed
-        if: steps.dwc_mapping.outcome == 'failure'
-        run: exit 1
-
-      - name: Commit and push mapped data
-        if: steps.fetch_changes.outputs.has_changes == 'true'
-        uses: devops-infra/action-commit-push@f066ea8e19660de57d3d3a4a0b9d294ea2612e20 # v1.5.0
-        with:
-          github_token: ${{ github.token }}
-          commit_prefix: "[AUTO]"
-          commit_message: "Mapping"
-          target_branch: ${{ steps.branch_name.outputs.name }}
-      - name: Run tests
-        if: steps.fetch_changes.outputs.has_changes == 'true'
-        id: run_tests
-        run: |
-          testthat::test_file("tests/test_dwc_occurrence.R", reporter = "stop")
-        shell: Rscript {0}
-        continue-on-error: true
-
-      - name: Create issue if tests fail
-        if: steps.run_tests.outcome == 'failure'
-        uses: actions/github-script@v9
-        with:
-          github-token: ${{ github.token }}
-          script: |
-            await github.rest.issues.create({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              title: '[AUTO] Tests failed',
-              body: `This is an automated issue.\n\nThe tests failed in the workflow run.\n\nFailed run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
-              labels: ['automated workflow', 'testing']
-            })
-
-      - name: Fail workflow if tests failed
-        if: steps.run_tests.outcome == 'failure'
-        run: exit 1
 
       - name: Add approved label to PR if tests pass
         if: steps.fetch_changes.outputs.has_changes == 'true' && steps.run_tests.outcome == 'success'
