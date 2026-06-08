@@ -115,7 +115,6 @@ jobs:
             const fs = require('fs');
             const path = require('path');
             const branchName = '${{ steps.branch_name.outputs.name }}';
-            
             const { data: pullRequests } = await github.rest.pulls.list({
               owner: context.repo.owner,
               repo: context.repo.repo,
@@ -189,7 +188,7 @@ jobs:
           github_token: ${{ github.token }}
           commit_prefix: "[AUTO]"
           commit_message: "Mapping"
-          target_branch: automatic-update
+          target_branch: ${{ steps.branch_name.outputs.name }}
       - name: Run tests
         if: steps.fetch_changes.outputs.has_changes == 'true'
         id: run_tests
