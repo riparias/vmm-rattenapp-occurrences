@@ -252,7 +252,7 @@ jobs:
                 throw new Error(`Found ${matchingPRs.length} matching PRs. Expected only one.`);
               }
 
-const pr = matchingPRs[0];
+              const pr = matchingPRs[0];
               
               await github.rest.issues.addLabels({
                 owner: context.repo.owner,
