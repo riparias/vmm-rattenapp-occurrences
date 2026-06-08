@@ -245,8 +245,14 @@ jobs:
             });
             
             if (pullRequests.length > 0) {
-              const pr = pullRequests.find(pr => pr.title === '[AUTO] Update data' && pr.base?.ref === 'main');
-              if (!pr) throw new Error("Expected an open PR '[AUTO] Update data' targeting 'main' from 'automatic-update', but none was found.");
+              const matchingPRs = pullRequests.filter(pr => pr.title === '[AUTO] Update data' && pr.base?.ref === 'main');
+              if (matchingPRs.length === 0) {
+                throw new Error("No open PR '[AUTO] Update data' targeting 'main' from 'automatic-update' was found.");
+              } else if (matchingPRs.length > 1) {
+                throw new Error(`Found ${matchingPRs.length} matching PRs. Expected only one.`);
+              }
+
+const pr = matchingPRs[0];
               
               await github.rest.issues.addLabels({
                 owner: context.repo.owner,
@@ -270,8 +276,14 @@ jobs:
             });
             
             if (pullRequests.length > 0) {
-              const pr = pullRequests.find(pr => pr.title === '[AUTO] Update data' && pr.base?.ref === 'main');
-              if (!pr) throw new Error("Expected an open PR '[AUTO] Update data' targeting 'main' from 'automatic-update', but none was found.");
+              const matchingPRs = pullRequests.filter(pr => pr.title === '[AUTO] Update data' && pr.base?.ref === 'main');
+              if (matchingPRs.length === 0) {
+                throw new Error("No open PR '[AUTO] Update data' targeting 'main' from 'automatic-update' was found.");
+              } else if (matchingPRs.length > 1) {
+                throw new Error(`Found ${matchingPRs.length} matching PRs. Expected only one.`);
+              }
+              
+              const pr = matchingPRs[0];
               
               // Merge the PR
               await github.rest.pulls.merge({
