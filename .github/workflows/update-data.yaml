@@ -102,8 +102,9 @@ jobs:
           add_timestamp: true
 
       - name: Get branch name
+        id: branch_name
         run: |
-          git branch --show-current
+          echo "name=$(git branch --show-current)" >> "$GITHUB_OUTPUT"
 
       - name: Create pull request
         if: steps.fetch_changes.outputs.has_changes == 'true'
@@ -113,11 +114,13 @@ jobs:
           script: |
             const fs = require('fs');
             const path = require('path');
+            const branchName = '${{ steps.branch_name.outputs.name }}';
             
             const { data: pullRequests } = await github.rest.pulls.list({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              head: `${context.repo.owner}:automatic-update`,
+              head: `${context.repo.owner}:${branchName}`,
+              base: 'main',
               state: 'open'
             });
             
@@ -135,36 +138,22 @@ jobs:
               // Append workflow run link
               prBody += `\n\n---\n\nWorkflow run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
               
-              await github.rest.pulls.create({
+              const { data: pr } = await github.rest.pulls.create({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 title: '[AUTO] Update data',
-                head: 'automatic-update',
+                head: branchName,
                 base: 'main',
                 body: prBody
               });
               
               // Add label to the newly created PR
-              // (give GitHub a moment to index the PR before listing)
-              await new Promise(resolve => setTimeout(resolve, 5000));
-
-              const { data: newPRs } = await github.rest.pulls.list({
+              await github.rest.issues.addLabels({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                head: `${context.repo.owner}:automatic-update`,
-                state: 'open'
+                issue_number: pr.number,
+                labels: ['automated workflow']
               });
-              
-              if (newPRs.length > 0) {
-                const pr = newPRs.find(pr => pr.title === '[AUTO] Update data' && pr.base?.ref === 'main') ?? newPRs[0];
-
-                await github.rest.issues.addLabels({
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  issue_number: pr.number,
-                  labels: ['automated workflow']
-                });
-              }
             }
 
       - name: Mapping to DwC
@@ -233,30 +222,25 @@ jobs:
         with:
           github-token: ${{ github.token }}
           script: |
+            const branchName = '${{ steps.branch_name.outputs.name }}';
             const { data: pullRequests } = await github.rest.pulls.list({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              head: `${context.repo.owner}:automatic-update`,
+              head: `${context.repo.owner}:${branchName}`,
+              base: 'main',
               state: 'open'
             });
             
-            if (pullRequests.length > 0) {
-              const matchingPRs = pullRequests.filter(pr => pr.base?.ref === 'main');
-              if (matchingPRs.length === 0) {
-                throw new Error("No open PR targeting 'main' from 'automatic-update' was found.");
-              } else if (matchingPRs.length > 1) {
-                throw new Error(`Found ${matchingPRs.length} open PRs targeting 'main' from 'automatic-update'. Expected only one.`);
-              }
-
-              const pr = matchingPRs[0];
-              
-              await github.rest.issues.addLabels({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: pr.number,
-                labels: ['approved']
-              });
+            if (pullRequests.length === 0) {
+              throw new Error("No open PR targeting 'main' from the current branch was found.");
             }
+            
+            await github.rest.issues.addLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: pullRequests[0].number,
+              labels: ['approved']
+            });
 
       - name: Merge PR
         if: steps.fetch_changes.outputs.has_changes == 'true' && steps.run_tests.outcome == 'success'
@@ -264,30 +248,23 @@ jobs:
         with:
           github-token: ${{ github.token }}
           script: |
+            const branchName = '${{ steps.branch_name.outputs.name }}';
             const { data: pullRequests } = await github.rest.pulls.list({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              head: `${context.repo.owner}:automatic-update`,
+              head: `${context.repo.owner}:${branchName}`,
+              base: 'main',
               state: 'open'
             });
             
-            if (pullRequests.length > 0) {
-              const matchingPRs = pullRequests.filter(pr => pr.base?.ref === 'main');
-              if (matchingPRs.length === 0) {
-                throw new Error("No open PR targeting 'main' from 'automatic-update' was found.");
-              } else if (matchingPRs.length > 1) {
-                throw new Error(`Found ${matchingPRs.length} open PRs targeting 'main' from 'automatic-update'. Expected only one.`);
-              }
-              }
-              
-              const pr = matchingPRs[0];
-              
-              // Merge the PR
-              await github.rest.pulls.merge({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                pull_number: pr.number,
-                commit_title: '[AUTO] Merge data update',
-                merge_method: 'merge'
-              });
+            if (pullRequests.length === 0) {
+              throw new Error("No open PR targeting 'main' from the current branch was found.");
             }
+            
+            await github.rest.pulls.merge({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: pullRequests[0].number,
+              commit_title: '[AUTO] Merge data update',
+              merge_method: 'merge'
+            });
