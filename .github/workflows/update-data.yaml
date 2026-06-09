@@ -76,10 +76,7 @@ jobs:
               body: `This is an automated issue.\n\nThe data fetching step failed in the workflow run.\n\nFailed run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
               labels: ['automated workflow', 'fetch']
             })
-
-      - name: Fail workflow if fetch failed
-        if: steps.fetch_data.outcome == 'failure'
-        run: exit 1
+            core.setFailed('Data fetch failed')
 
       - name: Check for fetched data changes
         id: fetch_changes
@@ -112,10 +109,7 @@ jobs:
               body: `This is an automated issue.\n\nThe DwC mapping step failed in the workflow run.\n\nFailed run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
               labels: ['automated workflow', 'mapping']
             })
-
-      - name: Fail workflow if mapping failed
-        if: steps.dwc_mapping.outcome == 'failure'
-        run: exit 1
+            core.setFailed('DwC mapping failed')
 
       - name: Run tests
         if: steps.fetch_changes.outputs.has_changes == 'true'
@@ -138,10 +132,7 @@ jobs:
               body: `This is an automated issue.\n\nThe tests failed in the workflow run.\n\nFailed run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
               labels: ['automated workflow', 'testing']
             })
-
-      - name: Fail workflow if tests failed
-        if: steps.run_tests.outcome == 'failure'
-        run: exit 1
+            core.setFailed('Tests failed')
 
       - name: Commit and push all changes
         if: steps.fetch_changes.outputs.has_changes == 'true' && steps.run_tests.outcome == 'success'
@@ -159,7 +150,7 @@ jobs:
         run: |
           echo "name=$(git branch --show-current)" >> "$GITHUB_OUTPUT"
 
-      - name: Create pull request
+      - name: Create PR, add labels and merge
         if: steps.fetch_changes.outputs.has_changes == 'true' && steps.run_tests.outcome == 'success'
         uses: actions/github-script@v9
         with:
@@ -168,95 +159,39 @@ jobs:
             const fs = require('fs');
             const path = require('path');
             const branchName = '${{ steps.branch_name.outputs.name }}';
-            const { data: pullRequests } = await github.rest.pulls.list({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              head: `${context.repo.owner}:${branchName}`,
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            
+            // Read PR template
+            const templatePath = path.join(process.env.GITHUB_WORKSPACE, '.github/PULL_REQUEST_TEMPLATE.md');
+            let prBody = '';
+            try {
+              prBody = fs.readFileSync(templatePath, 'utf8');
+            } catch {
+              prBody = 'Automated data update.';
+            }
+            prBody += `\n\n---\n\nWorkflow run: ${context.serverUrl}/${owner}/${repo}/actions/runs/${context.runId}`;
+            
+            // Create PR
+            const { data: pr } = await github.rest.pulls.create({
+              owner, repo,
+              title: '[AUTO] Update data',
+              head: branchName,
               base: 'main',
-              state: 'open'
+              body: prBody
             });
             
-            if (pullRequests.length === 0) {
-              // Read PR template
-              const templatePath = path.join(process.env.GITHUB_WORKSPACE, '.github/PULL_REQUEST_TEMPLATE.md');
-              let prBody = '';
-              
-              try {
-                prBody = fs.readFileSync(templatePath, 'utf8');
-              } catch (error) {
-                prBody = 'Automated data update.';
-              }
-              
-              // Append workflow run link
-              prBody += `\n\n---\n\nWorkflow run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
-              
-              const { data: pr } = await github.rest.pulls.create({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                title: '[AUTO] Update data',
-                head: branchName,
-                base: 'main',
-                body: prBody
-              });
-              
-              // Add label to the newly created PR
-              await github.rest.issues.addLabels({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: pr.number,
-                labels: ['automated workflow']
-              });
-            }
-
-      - name: Add approved label to PR if tests pass
-        if: steps.fetch_changes.outputs.has_changes == 'true' && steps.run_tests.outcome == 'success'
-        uses: actions/github-script@v9
-        with:
-          github-token: ${{ github.token }}
-          script: |
-            const branchName = '${{ steps.branch_name.outputs.name }}';
-            const { data: pullRequests } = await github.rest.pulls.list({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              head: `${context.repo.owner}:${branchName}`,
-              base: 'main',
-              state: 'open'
-            });
-            
-            if (pullRequests.length === 0) {
-              throw new Error("No open PR targeting 'main' from the current branch was found.");
-            }
-            
+            // Add labels
             await github.rest.issues.addLabels({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: pullRequests[0].number,
-              labels: ['approved']
-            });
-
-      - name: Merge PR
-        if: steps.fetch_changes.outputs.has_changes == 'true' && steps.run_tests.outcome == 'success'
-        uses: actions/github-script@v9
-        with:
-          github-token: ${{ github.token }}
-          script: |
-            const branchName = '${{ steps.branch_name.outputs.name }}';
-            const { data: pullRequests } = await github.rest.pulls.list({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              head: `${context.repo.owner}:${branchName}`,
-              base: 'main',
-              state: 'open'
+              owner, repo,
+              issue_number: pr.number,
+              labels: ['automated workflow', 'approved']
             });
             
-            if (pullRequests.length === 0) {
-              throw new Error("No open PR targeting 'main' from the current branch was found.");
-            }
-            
+            // Merge PR
             await github.rest.pulls.merge({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              pull_number: pullRequests[0].number,
+              owner, repo,
+              pull_number: pr.number,
               commit_title: '[AUTO] Merge data update',
               merge_method: 'merge'
             });
