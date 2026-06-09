@@ -45,7 +45,7 @@ Read both plant and animal observations up to the end of 2021 and merge them:
 ```{r read_obs_old}
 message("Fetch observations up to the end of 2021...")
 # Plants up to 2021 included
-raw_plants_filename_old <- "Dieren en Planten Waarnemingen 2016-2021.xlsx"
+raw_plants_filename_old <- "Dieren en Planten Waarnemingen 2016-202.xlsx"
 # Get all sheets
 raw_plants_sheets_old <- readxl::excel_sheets(
   path = here::here("data", "raw", raw_plants_filename_old)
