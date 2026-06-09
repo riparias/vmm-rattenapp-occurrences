@@ -42,7 +42,7 @@ Read all observations as fetched and merged in `./src/fetch_data.Rmd`:
 ```{r read_obs}
 message("Read interim data...")
 occurrences <- readr::read_csv(
-  file = here::here("data", "interim", "raw_occurrences.csv"),
+  file = here::here("data", "interim", "raw_occurrence.csv"),
   col_types = cols(.default = col_character()))
 ```
 
