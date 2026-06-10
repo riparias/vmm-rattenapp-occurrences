@@ -34,7 +34,7 @@ library(digest)         # To generate hashes
 
 # Fetch raw data
 
-The source data are provided manually and stored in `data/raw`. If this workflow can be fully automated, replace with querying from VMM endpoints.
+The source data are provided via WebDAV and stored in `data/raw`. If this workflow can be fully automated, replace with querying from VMM endpoints.
 
 ## Fetch observations
 
