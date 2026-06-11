@@ -7,7 +7,6 @@ library(dplyr)
 occs_path <- here::here("data", "processed", "occurrence.csv")
 dwc_occurrence <- readr::read_csv(occs_path, guess_max = 50000)
 
-View(dwc_occurrence)
 # tests
 testthat::test_that("Right columns in right order", {
   columns <- c(
