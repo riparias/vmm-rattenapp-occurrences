@@ -6,7 +6,6 @@ library(dplyr)
 # read proposed new version of the DwC mapping
 occs_path <- here::here("data", "processed", "occurrence.csv")
 dwc_occurrence <- readr::read_csv(occs_path, guess_max = 50000)
-problems(dwc_occurrence)
 
 View(dwc_occurrence)
 # tests
