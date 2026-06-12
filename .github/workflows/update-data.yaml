@@ -145,7 +145,13 @@ jobs:
         if: steps.read_changes.outputs.has_changes == 'true'
         id: run_tests
         run: |
-          testthat::test_file("tests/test_dwc_occurrence.R", reporter = "stop")
+          results <- testthat::test_file("tests/test_dwc_occurrence.R")
+          df <- as.data.frame(results)
+          n_failures <- sum(df$failed) + sum(df$error)
+          if (n_failures > 0) {
+            message(sprintf("%d test(s) failed or errored.", n_failures))
+            quit(status = 1, save = "no")
+          }
         shell: Rscript {0}
         continue-on-error: true
 
