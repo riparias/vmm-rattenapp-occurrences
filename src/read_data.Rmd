@@ -1,5 +1,5 @@
 ---
-title: "Fetch VMM rattenapp data"
+title: "Read VMM rattenapp data"
 author:
 - Damiano Oldoni
 - Peter Desmet
@@ -32,18 +32,18 @@ library(readxl)         # To read Excel files
 library(digest)         # To generate hashes
 ```
 
-# Fetch raw data
+# Read raw data
 
 The source data are provided via WebDAV and stored in `data/raw`. If this workflow can be fully automated, replace with querying from VMM endpoints.
 
-## Fetch observations
+## Read observations
 
-### Fetch observations up to 2021
+### Read observations up to 2021
 
 Read both plant and animal observations up to the end of 2021 and merge them:
 
 ```{r read_obs_old}
-message("Fetch observations up to the end of 2021...")
+message("Read observations up to the end of 2021...")
 # Plants up to 2021 included
 raw_plants_filename_old <- "Dieren en Planten Waarnemingen 2016-2021.xlsx"
 # Get all sheets
@@ -76,10 +76,10 @@ observations_old <- dplyr::bind_rows(observations_plants_old,
 message("DONE")
 ```
 
-### Fetch observations from 2022
+### Read observations from 2022
 
 ```{r read_obs_from_2022}
-message("Fetch observations from begin 2022...")
+message("Read observations from begin 2022...")
 raw_obs_filename <- "Dieren en Planten Waarnemingen from 2022-01-01.csv"
 observations <- readr::read_tsv(
   here::here("data", "raw", raw_obs_filename),
@@ -102,13 +102,13 @@ observations <- dplyr::bind_rows(observations_old, observations)
 message("DONE")
 ```
 
-## Fetch catches
+## Read catches
 
-### Fetch catches of 2021
+### Read catches of 2021
 
 Get catches from 2021: 
 
-```{r fetch_catches_old}
+```{r read_catches_old}
 message("Fetch catches up to the end of 2021...")
 # catches 2021
 catches_2021_filename <- "Vangsten T13_05_14.xlsx"
