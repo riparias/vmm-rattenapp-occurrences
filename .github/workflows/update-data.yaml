@@ -60,8 +60,9 @@ jobs:
         id: fetch_data
         env:
           WEBDAV_PASSWORD: ${{ secrets.WEBDAV_PASSWORD }}
+          WEBDAV_USER: ${{ secrets.WEBDAV_USER }}
         run: |
-          curl --fail -u "INBO:${WEBDAV_PASSWORD}" \
+          curl --fail -u "$WEBDAV_USER$:${WEBDAV_PASSWORD}" \
             "https://int-web.vmm.be/ratten/Dieren%20en%20Planten%20Waarnemingen%20INBO%20Email-nl-be.csv" \
             -o "data/raw/Dieren en Planten Waarnemingen from 2022-01-01.csv"
           curl --fail -u "INBO:${WEBDAV_PASSWORD}" \
