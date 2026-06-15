@@ -65,7 +65,7 @@ jobs:
           curl --fail -u "$WEBDAV_USER$:${WEBDAV_PASSWORD}" \
             "https://int-web.vmm.be/ratten/Dieren%20en%20Planten%20Waarnemingen%20INBO%20Email-nl-be.csv" \
             -o "data/raw/Dieren en Planten Waarnemingen from 2022-01-01.csv"
-          curl --fail -u "INBO:${WEBDAV_PASSWORD}" \
+          curl --fail -u "$WEBDAV_USER:${WEBDAV_PASSWORD}" \
             "https://int-web.vmm.be/ratten/Vangsten%20INBO%20Email-nl-be.csv" \
             -o "data/raw/Vangsten from 2022-01-01.csv"
         continue-on-error: true
