@@ -48,4 +48,4 @@ data/raw/pictures/*
 .positai
 
 # Windows script to download data manually via webDAV
-src/download_data_manually_webdav.bat
+download_data_manually_webdav.bat
