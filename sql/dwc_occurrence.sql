@@ -176,6 +176,7 @@ SELECT
     WHEN o."Sporen Waarnemingen Naam" = 'Gevlekte amerikaanse' THEN 'Faxonius limosus'
     WHEN o."Sporen Waarnemingen Naam" = 'Gevlekte amerikaanse rivi' THEN 'Faxonius limosus'
     WHEN o."Sporen Waarnemingen Naam" = 'Stierkikker' THEN 'Lithobates catesbeianus'
+    WHEN o."Sporen Waarnemingen Naam" = 'Stierdikkop' THEN 'Lithobates catesbeianus'
     WHEN o."Sporen Waarnemingen Naam" = 'Rode ibis' THEN 'Eudocimus ruber'
     ELSE NULL
   END                                   AS scientificName,
@@ -236,7 +237,6 @@ WHERE
   o."Sporen Waarnemingen Naam" != 'Beversschade - risico' AND
   o."Sporen Waarnemingen Naam" != 'Wespennest in oever .😳' AND
   o."Sporen Waarnemingen Naam" != 'Geelwang' AND
-  o."Sporen Waarnemingen Naam" != "Stierdikkop" AND
   o."Sporen Waarnemingen Naam" != 'Scldpad' AND
   -- Remove observations related to control teams
   o."Team Naam" != 'Controle Oost' AND
