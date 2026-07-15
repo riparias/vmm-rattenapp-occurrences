@@ -180,7 +180,7 @@ SELECT
     WHEN o."Sporen Waarnemingen Naam" = 'Stierkikker' THEN 'Lithobates catesbeianus'
     WHEN o."Sporen Waarnemingen Naam" = 'Stierdikkop' THEN 'Lithobates catesbeianus'
     WHEN o."Sporen Waarnemingen Naam" = 'Rode ibis' THEN 'Eudocimus ruber'
-    WHEN o."Sporen Waarnemingen Naam" = 'ringslang' THEN 'Natrix helvetica'
+    WHEN o."Sporen Waarnemingen Naam" = 'Ringslang' THEN 'Natrix helvetica'
     ELSE NULL
   END                                   AS scientificName,
   CASE
