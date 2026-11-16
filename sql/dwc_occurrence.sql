@@ -144,6 +144,7 @@ SELECT
     WHEN o."Sporen Waarnemingen Naam" = 'Nijlganzen' THEN 'Alopochen aegyptiaca'
     WHEN o."Sporen Waarnemingen Naam" = 'Nijlganzen nest' THEN 'Alopochen aegyptiaca'
     WHEN o."Sporen Waarnemingen Naam" = 'Pootafdrukken wasbeer' THEN 'Procyon lotor'
+    WHEN o."Sporen Waarnemingen Naam" = 'Wasbeer' THEN 'Procyon lotor'
     WHEN o."Sporen Waarnemingen Naam" = 'Geelbuikschildpad' THEN 'Trachemys scripta scripta'
     WHEN o."Sporen Waarnemingen Naam" = 'Geelwangwaterschildpadden' THEN 'Trachemys scripta troosti'
     WHEN o."Sporen Waarnemingen Naam" = 'Geelwangschildpad' THEN 'Trachemys scripta troosti'
